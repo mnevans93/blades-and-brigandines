@@ -1,5 +1,4 @@
-There will be multiple containers/screens for each main area of the game:
-
+    There will be multiple containers/screens for each main area of the game:
     Start/character creation screen
         Build in a modal that explains basic mechanics such as what effects stats have, how to battle, what each battle action does, how to spend gold, how to level up (or just link the player to the README.md)
         Player hits start which pulls up character creation screen
@@ -64,6 +63,7 @@ There will be multiple containers/screens for each main area of the game:
                 Stretch goal - set up tournaments that the player can become eligible for once they reach certain levels where they fight a series of enemies without breaks. Tournaments are always to the death
                 
     Battle screen where the player fights the randomly generated enemy and receives gold and experience towards their next level. If the player dies, it's game over
+        (Stretch goal: use sessionStorage to allow user to retry a battle? Add game state to sessionStorage before battle, then reload sessionStorage game state data to give user another try)
         Player has the following options in battle:
             Attacks: light, medium, heavy. Heavier the attack, the more potential damage, less accuracy, and higher crit chance. Light is 1x damage multiplier, medium is 1.5x, heavy is 2x. Light crit chance is 5%, medium is 10%, heavy is 20%. Crits double the damage dealt and pierce through armor to health
             Defend: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits
@@ -79,3 +79,25 @@ There will be multiple containers/screens for each main area of the game:
         Reward screen:
             Player receives gold and experience based on level of their opponent
             If player has enough xp for a level up, character stat window will appear and allow user to allocate additional stat points
+
+    Starting development path:
+        1. Build HTML and rough CSS for main screen
+            a. Game title
+            b. Basic game explanation with option to click modal for detailed game overview
+            c. Modal for game overview
+            d. Button to "start the game"
+        2. Build HTML and rough CSS for character creation screen
+            a. Character name input field
+            b. All stats: span for each stat value, button for each stat to allocate stat points
+            c. Display remaining stat points to allocate
+            d. Button to start game or to cancel and go back to the main screen
+            e. Display button to start game only when all stat points are allocated
+        3. Start writing JavaScript
+            a. Declare Gladiator class with constructor(name, attack, strength, defense, vitality, stamina, charisma), add other properties/methods later
+            b. Declare playerGladiator and enemyGladiator object variables but do not instantiate them yet
+            c. Declare necessary global variables for HTML elements such as name input field, stat spans, allocate buttons
+            d. Write event listener for start game button to initialize the game
+                i. Instantiate playerGladiator object with the information input by the user
+                ii. Instantiate an enemyGladiator object for the player to fight
+                    a. Create random stat generator class method
+                    etc.
