@@ -16,21 +16,21 @@
                 Heavy attacks require 40 base stamina + 8 for every strength level
 
             Defense - determines how hard it is to hit the gladiator. Directly counteracts attacker's attack stat. Each point of defense increases chance to block the attack by the same percentages shown in attack. Also affects Defend combat ability
-                *Defend*: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits
+                Defend: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits
 
             Vitality - determines gladiator's health scaling. At level 0 vitality, gladiators have 20 HP, and each character level, they gain 20 additional base HP. Each point of vitality grants an additional 2 HP per level-up on top of the base of 20. This is retroactive so leveling vitality at higher character levels will take into account all previous levels as well
 
             Stamina - determines gladiator's stamina pool scaling. At level 1, gladiators have 50 stamina, and each level they gain an additional 50 stamina. Each point of stamina grants an additional 10 stamina per level-up on top of the base 50. This is retroactive so leveling stamina at higher levels will take into account all previous levels as well
-                *Rest*: This action restores 50% of the gladiator's stamina. Not usable if stamina is full. Only available action if gladiator has <= 0 stamina on their turn
+                Rest: This action restores 50% of the gladiator's stamina. Not usable if stamina is full. Only available action if gladiator has <= 0 stamina on their turn
 
             Charisma - determines extra gold earned from fights, shop discounts, and taunt/win the crowd effectiveness. Base gold earned is 80% of potential value, and shop prices are 120% their normal values. Each level is 5% additional gold/shop discount. Level 1 taunts have a 50% chance to succeed and each level of charisma increases chance to succeed by 5%, directly contested by opponent's charisma which subtracts 5% from taunt success chance. Each level of charisma makes win the crowd 25% more effective.
-                *Taunt*: This action, if successful, inflicts a random debuff on the enemy
+                Taunt: This action, if successful, inflicts a random debuff on the enemy
                     Debuffs:
                         30% chance - Enraged - Decreases chance of opponent's next attack to hit by 50%, but if successful, the attack hits 2x harder. Expires at the end of opponent's next turn
                         30% chance - Distracted - Increases your chance to hit your opponent by 50% on your next attack. Expires at the end of your next turn
                         30% chance - Exasperated - Reduces opponent's stamina by 50% of current total
                         10% chance - Countered - Skip opponent's next turn and hit them with a free light attack
-                *Win the Crowd*: This action raises the crowd's engagement in the battle by a minimum of 20%. Crowd engagement scales from 0 to 100% and acts as a bonus to gold earned from a fight with 100% engagement rewarding a win with 2x the gold. Each point of charisma increases crowd engagement by 5%, so a gladiator with level 10 charisma would raise crowd engagement by 70%
+                Win the Crowd: This action raises the crowd's engagement in the battle by a minimum of 20%. Crowd engagement scales from 0 to 100% and acts as a bonus to gold earned from a fight with 100% engagement rewarding a win with 2x the gold. Each point of charisma increases crowd engagement by 5%, so a gladiator with level 10 charisma would raise crowd engagement by 70%
             
     Town screen where the player can access the different shops as well as the arena. They can also access their character's inventory to change weapons, armor, etc.
         Buttons on top side of screen for accessing:
@@ -83,7 +83,7 @@
     Starting development path:
         1. Build HTML and rough CSS for main screen
             a. Game title
-            b. Basic game explanation with option to click modal for detailed game overview
+            b. Basic game explanation with option to click How to Play for detailed game overview
             c. Modal for game overview
             d. Button to "start the game"
         2. Build HTML and rough CSS for character creation screen

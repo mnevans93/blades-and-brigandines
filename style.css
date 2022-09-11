@@ -1,3 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
 body {
-    background-color: burlywood;
+    background-color: rgb(65, 54, 40);
+    font-family: 'DotGothic16', sans-serif;
+    color: red;
+}
+
+button {
+    background-color: black;
+    font-family: 'DotGothic16', sans-serif;
+    color: red;
+    border: solid red 1px;
+    text-align: center;
+}
+
+button:hover {
+    color: white;
+    border: solid white 1px;
+    transition-duration: 1000ms;
+    cursor: pointer;
+}
+
+#loadButton {
+    position: absolute;
+    top: 50%; right: 50%;
+    transform: translate(50%,-50%);
+    font-size: 48px;
+}
+
+#startScreen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 95%;
+    margin: auto;
+    opacity: 0;
+}
+
+#startScreen > h1 {
+    font-size: 36px;
+}
+
+#startScreen > h1, #startScreen > h3 {
+    background-color: black;
+    padding: 10px;
+}
+
+#startScreen > img {
+    width: 75%;
+    max-width: 300px;
+    height: 75%;
+    max-height: 300px;
+}
+
+#startScreenInputs {
+    display: block;
+    justify-content: space-between;
+    width: 50%;
+}
+
+#startScreenInputs > input, #startScreenInputs > button, #startScreenInputs > h3 {
+    font-size: 24px;
+    margin: 10px 10px;
+    font-family: 'DotGothic16', sans-serif;
+}
+
+#startScreenInputs > input {
+    background-color: black;
+    border: solid red 1px;
+    color: red;
+    text-align: center;
 }
