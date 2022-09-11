@@ -54,6 +54,7 @@
                     Leather armor - "Fitted, more durable armor. This might just keep you alive."
                     ...etc...
                 Stretch goal - Inn - player sleeps here to fully heal, charges a flat fee each time player sleeps. Player can do maximum of three matches before sleeping, minimum of one
+                Stretch goal - Enchanter - enchants weapons and armor with various effects from stat boosts to special abilities
                 Stretch goal - Alchemist - sells one-time use consumables, character can only carry a certain number at any given time
             Arena:
                 The player can choose a normal, hard, or deadly fight for their level. Difficulties will be based on character's level, and hard/deadly will add a +1/+2 level scaling factor respectively to the randomly generated enemy, so a normal fight opponent will be equivalent level to player, while hard and deadly opponents will be 1 and 2 levels higher respectively. They will yield higher gold and experience as well
