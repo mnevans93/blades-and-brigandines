@@ -1,4 +1,5 @@
 //GLOBAL VARIABLES
+
 const allButtons = document.querySelectorAll('button')
 const loadBtn = document.getElementById('loadButton')
 const simpleClick = new Audio('Audio/simpleClick.wav')
@@ -16,8 +17,18 @@ const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
 const characterStatConfirmBtn = document.getElementById('confirmStats')
 const statAdjustCol = document.getElementById('adjustColumn')
+const genericModal = document.getElementById('genericModal')
+const genericModalTextEl = document.getElementById('genericModalText')
+const closeGenericModalBtn = document.getElementById('closeGenericModal')
 
+//
+//
+//
 //CLASSES AND OBJECTS
+//
+//
+//
+
 class Gladiator {
     constructor(name, strength, attack, defense, vitality, stamina, charisma, statPoints) {
         this.name = name
@@ -35,7 +46,14 @@ const playerGladiator = new Gladiator(0,0,0,0,0,0,0,5)
 let musicRepeatInterval = null
 let playerCanChangeStats = true
 
+//
+//
+//
 //FUNCTIONS
+//
+//
+//
+
 //Got this one from stackoverflow and modified it: https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
 const unfade = (element, fadeSpeed) => {
     let op = 0.1;  // initial opacity
@@ -61,7 +79,19 @@ const renderStats = () => {
     })
 }
 
+const displayGenericModal = (modalText) => {
+    genericModalTextEl.innerText = modalText
+    genericModal.style.display = 'flex'
+}
+
+//
+//
+//
 //EVENT LISTENERS
+//
+//
+//
+
 allButtons.forEach(button => {
     button.addEventListener('click', (event) => {
         playSound(simpleClick)
@@ -124,5 +154,9 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         playerCanChangeStats = false
         characterStatConfirmBtn.style.display = 'none'
     //REPLACE THE ALERT WITH A MODAL OR SOMETHING
-    } else {alert('You must allocate all stat points before confirming your choices.')}
+    } else {displayGenericModal('You must allocate all stat points before proceeding.')}
+})
+
+closeGenericModalBtn.addEventListener('click', (event) => {
+    genericModal.style.display = 'none'
 })
