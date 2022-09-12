@@ -66,45 +66,45 @@
             <button id="closeHowToPlay">CLOSE</button>
         </div>
     </div>
-    <div id="characterCreationScreen">
+    <div id="characterStatScreen">
         <h1>Welcome to the Arena, <span class="playerName">Nameless One</span>. We wonder what kind of warrior you are.</h1>
-        <h3>Remaining Stat Points to Allocate: <span class="statPoints">5</span></h3>
+        <h3>Remaining Stat Points to Allocate: <span class="statList" stat="statPoints">5</span></h3>
         <div id="statAllocationWindow">
             <table id="statTable">
                 <tr>
                     <th>STATS</th>
                     <th>LEVEL</th>
-                    <th>ADJUST</th>
+                    <th id="adjustColumn">ADJUST</th>
                 </tr>
                 <tr>
                     <td>STRENGTH</td>
-                    <td id="playerStrength">0</td>
-                    <td><button class="statIncrementers" id="plusStrength">+</button><button class="statDecrementers" id="minusStrength">-</button></td>
+                    <td class="statList" stat="strength">0</td>
+                    <td><button class="statDecrementers" id="minusStrength" stat="strength"><</button><button class="statIncrementers" id="plusStrength" stat="strength">></button></td>
                 </tr>
                 <tr>
                     <td>ATTACK</td>
-                    <td id="playerAttack">0</td>
-                    <td><button class="statIncrementers" id="plusAttack">+</button><button class="statDecrementers" id="minusAttack">-</button></td>
+                    <td class="statList" stat="attack">0</td>
+                    <td><button class="statDecrementers" id="minusAttack" stat="attack"><</button><button class="statIncrementers" id="plusAttack" stat="attack">></button></td>
                 </tr>
                 <tr>
                     <td>DEFENSE</td>
-                    <td id="playerDefense">0</td>
-                    <td><button class="statIncrementers" id="plusDefense">+</button><button class="statDecrementers" id="minusDefense">-</button></td>
+                    <td class="statList" stat="defense">0</td>
+                    <td><button class="statDecrementers" id="minusDefense" stat="defense"><</button><button class="statIncrementers" id="plusDefense" stat="defense">></button></td>
                 </tr>
                 <tr>
                     <td>VITALITY</td>
-                    <td id="playerVitality">0</td>
-                    <td><button class="statIncrementers" id="plusVitality">+</button><button class="statDecrementers" id="minusVitality">-</button></td>
+                    <td class="statList" stat="vitality">0</td>
+                    <td><button class="statDecrementers" id="minusVitality" stat="vitality"><</button><button class="statIncrementers" id="plusVitality" stat="vitality">></button></td>
                 </tr>
                 <tr>
                     <td>STAMINA</td>
-                    <td id="playerStamina">0</td>
-                    <td><button class="statIncrementers" id="plusStamina">+</button><button class="statDecrementers" id="minusStamina">-</button></td>
+                    <td class="statList" stat="stamina">0</td>
+                    <td><button class="statDecrementers" id="minusStamina" stat="stamina"><</button><button class="statIncrementers" id="plusStamina" stat="stamina">></button></td>
                 </tr>
                 <tr>
                     <td>CHARISMA</td>
-                    <td id="playerCharisma">0</td>
-                    <td><button class="statIncrementers" id="plusCharisma">+</button><button class="statDecrementers" id="minusCharisma">-</button></td>
+                    <td class="statList" stat="charisma">0</td>
+                    <td><button class="statDecrementers" id="minusCharisma" stat="charisma"><</button><button class="statIncrementers" id="plusCharisma" stat="charisma">></button></td>
                 </tr>
             </table><br>
             <button id="confirmStats">CONFIRM CHOICES</button>
