@@ -10,6 +10,7 @@ const howToPlayModal = document.getElementById('howToPlayModal')
 const closeHowToPlayBtn = document.getElementById('closeHowToPlay')
 const characterStatScreen = document.getElementById('characterStatScreen')
 const nameInput = document.getElementById('nameInput')
+const playerNameSpan = document.querySelectorAll('.playerNameSpan')
 const allStatDecrementers = document.querySelectorAll('.statDecrementers')
 const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
@@ -89,6 +90,9 @@ startGameBtn.addEventListener('click', (event) => {
     } else {
         playerGladiator.name = 'Nameless One'
     }
+    playerNameSpan.forEach(span => {
+        span.textContent = playerGladiator.name
+    })
     startScreen.style.display = 'none'
     characterStatScreen.style.display = 'flex'
 })
