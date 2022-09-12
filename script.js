@@ -61,6 +61,7 @@ class Gladiator {
 }
 
 const playerGladiator = new Gladiator(0,0,0,0,0,0,0,5)
+const enemyGladiator = new Gladiator(0,0,0,0,0,0,0,0)
 
 //
 //
@@ -95,10 +96,6 @@ const renderStats = () => {
     })
 }
 
-const getNextScreen = () => {
-
-}
-
 const toggleScreen = () => {
     currentScreen.style.display = 'none'
     nextScreen.style.display = 'flex'
@@ -111,7 +108,7 @@ const displayGenericModal = (modalText) => {
 }
 
 const initiateCutscene = () => {
-    
+
 }
 
 //
@@ -205,9 +202,11 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         playerCanChangeStats = false
         startMusic.pause()
         clearInterval(musicRepeatInterval)
+        nextScreen = cutsceneContainer
+        toggleScreen()
         initiateCutscene()
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
-        //do different stuff when player is leveling up mid-game
+        //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
 })
 

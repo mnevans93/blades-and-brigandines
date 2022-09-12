@@ -16,7 +16,7 @@
                 Heavy attacks require 40 base stamina + 8 for every strength level
 
             Defense - determines how hard it is to hit the gladiator. Directly counteracts attacker's attack stat. Each point of defense increases chance to block the attack by the same percentages shown in attack. Also affects Defend combat ability
-                Defend: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits
+                Defend: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits (scrapping this ability)
 
             Vitality - determines gladiator's health scaling. At level 0 vitality, gladiators have 20 HP, and each character level, they gain 20 additional base HP. Each point of vitality grants an additional 2 HP per level-up on top of the base of 20. This is retroactive so leveling vitality at higher character levels will take into account all previous levels as well
 
@@ -67,7 +67,7 @@
         (Stretch goal: use sessionStorage to allow user to retry a battle? Add game state to sessionStorage before battle, then reload sessionStorage game state data to give user another try)
         Player has the following options in battle:
             Attacks: light, medium, heavy. Heavier the attack, the more potential damage, less accuracy, and higher crit chance. Light is 1x damage multiplier, medium is 1.5x, heavy is 2x. Light crit chance is 5%, medium is 10%, heavy is 20%. Crits double the damage dealt and pierce through armor to health
-            Defend: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits
+            Defend: This action doubles the user's defense stat until the start of their next turn and protects them from critical hits (scrapping this ability)
             Rest: This action restores 50% of the gladiator's stamina. Not usable if stamina is full. Only available action if gladiator has <= 0 stamina on their turn
             Taunt: This action, if successful, inflicts a random debuff on the enemy
                 Debuffs:
