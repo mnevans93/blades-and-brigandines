@@ -82,17 +82,12 @@
             If player has enough xp for a level up, character stat window will appear and allow user to allocate additional stat points
 
     Starting development path:
-        1. Build HTML and rough CSS for main screen
-            a. Game title
-            b. Basic game explanation with option to click How to Play for detailed game overview
-            c. Modal for game overview
-            d. Button to "start the game"
+        1. Build HTML and rough CSS for main screen (done)
         2. Build HTML and rough CSS for character creation screen
-            a. Character name input field
-            b. All stats: span for each stat value, button for each stat to allocate stat points
-            c. Display remaining stat points to allocate
-            d. Button to start game or to cancel and go back to the main screen
-            e. Display button to start game only when all stat points are allocated
+            a. All stats: span for each stat value, button for each stat to allocate stat points
+            b. Display remaining stat points to allocate
+            c. Button to start game or to cancel and go back to the main screen
+            d. Display button to start game only when all stat points are allocated
         3. Start writing JavaScript
             a. Declare Gladiator class with constructor(name, attack, strength, defense, vitality, stamina, charisma), add other properties/methods later
             b. Declare playerGladiator and enemyGladiator object variables but do not instantiate them yet

@@ -11,8 +11,9 @@ button {
     font-family: 'DotGothic16', sans-serif;
     color: red;
     border: solid red 1px;
-    border-radius: 10px;
+    border-radius: 25px;
     text-align: center;
+    padding: 10px;
 }
 
 button:hover {
@@ -27,6 +28,7 @@ button:hover {
     top: 50%; right: 50%;
     transform: translate(50%,-50%);
     font-size: 48px;
+    border-radius: 25px;
 }
 
 #startScreen {
@@ -46,6 +48,7 @@ button:hover {
 #startScreen > h1, #startScreen > h3 {
     background-color: black;
     padding: 10px;
+    border-radius: 25px;
 }
 
 #startScreen > img {
@@ -66,7 +69,8 @@ button:hover {
     margin: 10px 10px;
     font-family: 'DotGothic16', sans-serif;
     background-color: black;
-    padding: 5px;
+    padding: 10px;
+    border-radius: 25px;
 }
 
 #startScreenInputs > input {
@@ -74,6 +78,11 @@ button:hover {
     border: solid red 1px;
     color: red;
     text-align: center;
+    border-radius: 0;
+}
+
+#startScreenInputs > button {
+    width: 300px;
 }
 
 #howToPlayModal {
@@ -87,14 +96,13 @@ button:hover {
     overflow: auto;
     display: none;
     flex-direction: column;
-    opacity: 0;
 }
 
 #howToPlayTextbox {
     background-color: black;
 	width: 1400px;
     max-width: 80%;
-	border-radius: 10px;
+	border-radius: 25px;
 	margin: 25px auto;
 	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 	padding: 1%;
@@ -104,10 +112,12 @@ button:hover {
 #howToPlayTextbox > h1 {
     text-align: center;
     margin: 5px;
+    border-radius: 25px;
 }
 
 #howToPlayTextbox > h2, #howToPlayTextbox > p {
     margin: 10px;
+    border-radius: 25px;
 }
 
 #closeHowToPlay {
@@ -117,4 +127,53 @@ button:hover {
     background-color: black;
     width: 20%;
     float: right;
+}
+
+#characterCreationScreen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: auto;
+}
+
+#characterCreationScreen > h1 {
+    font-size: 36px;
+}
+
+#characterCreationScreen > h1, #characterCreationScreen > h3 {
+    background-color: black;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+#statTable {
+    width: 600px;
+    max-width: 75%;
+    margin: auto;
+    background-color: black;
+}
+
+table, th, td {
+    border: solid red 1px;
+    font-size: 24px;
+}
+
+th, td {
+    height: 50px;
+}
+
+.statIncrementers, .statDecrementers {
+    padding: 5px;
+    margin: 5px;
+    font-size: 16px;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#confirmStats {
+    width: 300px;
+    font-size: 24px;
 }

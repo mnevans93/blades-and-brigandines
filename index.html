@@ -13,14 +13,14 @@
     <div id="startScreen">
         <h1>BLADES AND BRIGANDINES</h1>
         <img src="Images/crossed swords.png" alt="Crossed black swords">
-        <h3>Welcome to Blades and Brigandines. In this roguelike game, you will step into the sandals of a gladiator fighting their way to fame and glory within the storied Arena.
+        <h3>Welcome to Blades and Brigandines. In this roguelike game, you will step into the sandals &#128526; of a gladiator fighting their way to fame and glory within the storied Arena.
         As your foes fall before you, you will gain experience and grow ever stronger, and the spoils of your victories may be spent on new weapons and armor to enhance your combat prowess.
         Many come to the Arena, but few leave with their lives. What does your fate have in store for you?
         <br><br>
         Type in your gladiator's name below and Enter the Arena to begin, or click How to Play for an explanation of basic game mechanics.
         </h3>
         <div id="startScreenInputs">
-            <input type="text"> <br>
+            <input id="nameInput" type="text" value="Nameless One"> <br>
             <button id="startGame">ENTER THE ARENA</button><button id="howToPlay">HOW TO PLAY</button>
         </div>
     </div>
@@ -60,10 +60,54 @@
             <h2><b>The Town</b></h2>
             <p>
                 The town is the hub in which you will spend all of your time while outside of the Arena. Aside from your room in the inn for resting after your fights, you can find
-                both a weaponsmith's shop and an armorsmith's shop. These artisans will gladly create stronger gear for you, provided you have the coin. Visit them to see what items
+                both a weaponsmith's shop and an armorsmith's shop. These artisans will gladly sell or create stronger gear for you, provided you have the coin. Visit them to see what items
                 they have available, but do try to not waste their time...
             </p>
             <button id="closeHowToPlay">CLOSE</button>
+        </div>
+    </div>
+    <div id="characterCreationScreen">
+        <h1>Welcome to the Arena, <span class="playerName">Nameless One</span>. We wonder what kind of warrior you are.</h1>
+        <h3>Remaining Stat Points to Allocate: <span class="statPoints">5</span></h3>
+        <div id="statAllocationWindow">
+            <table id="statTable">
+                <tr>
+                    <th>STATS</th>
+                    <th>LEVEL</th>
+                    <th>ADJUST</th>
+                </tr>
+                <tr>
+                    <td>STRENGTH</td>
+                    <td id="playerStrength">0</td>
+                    <td><button class="statIncrementers" id="plusStrength">+</button><button class="statDecrementers" id="minusStrength">-</button></td>
+                </tr>
+                <tr>
+                    <td>ATTACK</td>
+                    <td id="playerAttack">0</td>
+                    <td><button class="statIncrementers" id="plusAttack">+</button><button class="statDecrementers" id="minusAttack">-</button></td>
+                </tr>
+                <tr>
+                    <td>DEFENSE</td>
+                    <td id="playerDefense">0</td>
+                    <td><button class="statIncrementers" id="plusDefense">+</button><button class="statDecrementers" id="minusDefense">-</button></td>
+                </tr>
+                <tr>
+                    <td>VITALITY</td>
+                    <td id="playerVitality">0</td>
+                    <td><button class="statIncrementers" id="plusVitality">+</button><button class="statDecrementers" id="minusVitality">-</button></td>
+                </tr>
+                <tr>
+                    <td>STAMINA</td>
+                    <td id="playerStamina">0</td>
+                    <td><button class="statIncrementers" id="plusStamina">+</button><button class="statDecrementers" id="minusStamina">-</button></td>
+                </tr>
+                <tr>
+                    <td>CHARISMA</td>
+                    <td id="playerCharisma">0</td>
+                    <td><button class="statIncrementers" id="plusCharisma">+</button><button class="statDecrementers" id="minusCharisma">-</button></td>
+                </tr>
+            </table><br>
+            <button id="confirmStats">CONFIRM CHOICES</button>
         </div>
     </div>
 </body>
