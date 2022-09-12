@@ -22,6 +22,7 @@
         <div id="startScreenInputs">
             <input id="nameInput" type="text" value="Nameless One"> <br>
             <button id="startGame">ENTER THE ARENA</button><button id="howToPlay">HOW TO PLAY</button>
+            <button id="assets">CREDITS</button>
         </div>
     </div>
     <div id="howToPlayModal">
@@ -67,7 +68,7 @@
         </div>
     </div>
     <div id="characterStatScreen">
-        <h1>Welcome to the Arena, <span class="playerNameSpan">Nameless One</span>. We wonder what kind of warrior you are.</h1>
+        <h1 id="statScreenMessage">Welcome to the Arena, <span class="playerNameSpan">Nameless One</span>. We wonder what kind of warrior you are.</h1>
         <h3>Remaining Stat Points to Allocate: <span class="statList" stat="statPoints">5</span></h3>
         <div id="statAllocationWindow">
             <table id="statTable">
@@ -107,13 +108,19 @@
                     <td><button class="statDecrementers" id="minusCharisma" stat="charisma">&lt;</button><button class="statIncrementers" id="plusCharisma" stat="charisma">&gt;</button></td>
                 </tr>
             </table><br>
-            <button id="confirmStats">CONFIRM CHOICES</button>
+            <button id="confirmStats">CONFIRM CHOICES</button><br><br>
+            <button id="leaveStats">BACK TO START SCREEN</button>
         </div>
     </div>
     <div id="genericModal">
         <div id="genericModalTextbox">
             <h1 id="genericModalText">MESSAGE TEXT GOES HERE</h1><br>
             <button id="closeGenericModal">CLOSE</button>
+        </div>
+    </div>
+    <div id="cutsceneContainer">
+        <div id="cutscene">
+
         </div>
     </div>
 </body>

@@ -1,25 +1,43 @@
 //GLOBAL VARIABLES
 
-const allButtons = document.querySelectorAll('button')
-const loadBtn = document.getElementById('loadButton')
+//AUDIO FILE VARIABLES
 const simpleClick = new Audio('Audio/simpleClick.wav')
-const startScreen = document.getElementById('startScreen')
-const startMusic = new Audio('Audio/wardrums.wav')
-const startGameBtn = document.getElementById('startGame')
-const howToPlayBtn = document.getElementById('howToPlay')
-const howToPlayModal = document.getElementById('howToPlayModal')
-const closeHowToPlayBtn = document.getElementById('closeHowToPlay')
-const characterStatScreen = document.getElementById('characterStatScreen')
-const nameInput = document.getElementById('nameInput')
+const startMusic = new Audio('Audio/aftermath.mp3')
+const cutsceneMusic = new Audio('Audio/anxiety.mp3')
+
+//QUERY SELECTOR ALL VARIABLES
+const allButtons = document.querySelectorAll('button')
 const playerNameSpan = document.querySelectorAll('.playerNameSpan')
 const allStatDecrementers = document.querySelectorAll('.statDecrementers')
 const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
+
+//GET ELEMENT BY ID VARIABLES
+const loadBtn = document.getElementById('loadButton')
+const startScreen = document.getElementById('startScreen')
+const startGameBtn = document.getElementById('startGame')
+const howToPlayBtn = document.getElementById('howToPlay')
+const assetsBtn = document.getElementById('assets')
+const howToPlayModal = document.getElementById('howToPlayModal')
+const closeHowToPlayBtn = document.getElementById('closeHowToPlay')
+const characterStatScreen = document.getElementById('characterStatScreen')
+const nameInput = document.getElementById('nameInput')
+const statScreenMessage = document.getElementById('statScreenMessage')
 const characterStatConfirmBtn = document.getElementById('confirmStats')
+const characterStatBackBtn = document.getElementById('leaveStats')
 const statAdjustCol = document.getElementById('adjustColumn')
 const genericModal = document.getElementById('genericModal')
 const genericModalTextEl = document.getElementById('genericModalText')
 const closeGenericModalBtn = document.getElementById('closeGenericModal')
+const cutsceneContainer = document.getElementById('cutsceneContainer')
+const cutsceneEl = document.getElementById('cutscene')
+
+//ALL OTHER VARIABLES
+let musicRepeatInterval = null
+let playerCanChangeStats = true
+let currentScreen = startScreen
+let nextScreen = ''
+let isPlayerLevelingUp = false
 
 //
 //
@@ -43,8 +61,6 @@ class Gladiator {
 }
 
 const playerGladiator = new Gladiator(0,0,0,0,0,0,0,5)
-let musicRepeatInterval = null
-let playerCanChangeStats = true
 
 //
 //
@@ -79,9 +95,23 @@ const renderStats = () => {
     })
 }
 
+const getNextScreen = () => {
+
+}
+
+const toggleScreen = () => {
+    currentScreen.style.display = 'none'
+    nextScreen.style.display = 'flex'
+    currentScreen = nextScreen
+}
+
 const displayGenericModal = (modalText) => {
     genericModalTextEl.innerText = modalText
     genericModal.style.display = 'flex'
+}
+
+const initiateCutscene = () => {
+    
 }
 
 //
@@ -102,8 +132,8 @@ loadBtn.addEventListener('click', (event) => {
     loadBtn.style.display = 'none'
     musicRepeatInterval = setInterval(() =>{
         playSound(startMusic)
-    ,40000})
-    unfade(startScreen, 100)
+    ,180000})
+    unfade(startScreen, 150)
 })
 
 howToPlayBtn.addEventListener('click', (event) => {
@@ -112,6 +142,27 @@ howToPlayBtn.addEventListener('click', (event) => {
 
 closeHowToPlayBtn.addEventListener('click', (event) => {
     howToPlayModal.style.display = 'none'
+})
+
+assetsBtn.addEventListener('click', (event) => {
+    displayGenericModal(
+    `Music:
+
+    https://uppbeat.io/t/kevin-macleod/aftermath
+    License code: KGCJNYBZFDIQRVXL
+
+    https://uppbeat.io/t/kevin-macleod/anxiety
+    License code: BDYZNJGXFRQUHVIC
+
+    https://uppbeat.io/t/monument-music/stop-war
+    License code: NVPQ8DC1OD5OBEJU
+
+    https://uppbeat.io/t/ra/coming-after-you
+    License code: HLSXPKWE6SKAW2VI
+
+    https://uppbeat.io/t/cory-alstad/a-starless-night
+    License code: QALBW1UNUAMWRG7F`
+    )
 })
 
 startGameBtn.addEventListener('click', (event) => {
@@ -123,8 +174,8 @@ startGameBtn.addEventListener('click', (event) => {
     playerNameSpan.forEach(span => {
         span.textContent = playerGladiator.name
     })
-    startScreen.style.display = 'none'
-    characterStatScreen.style.display = 'flex'
+    nextScreen = characterStatScreen
+    toggleScreen()
 })
 
 allStatDecrementers.forEach(button => {
@@ -150,11 +201,19 @@ allStatIncrementers.forEach(button => {
 })
 
 characterStatConfirmBtn.addEventListener('click', (event) => {
-    if(playerGladiator.statPoints === 0) {
+    if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === false) {
         playerCanChangeStats = false
-        characterStatConfirmBtn.style.display = 'none'
-    //REPLACE THE ALERT WITH A MODAL OR SOMETHING
+        startMusic.pause()
+        clearInterval(musicRepeatInterval)
+        initiateCutscene()
+    } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
+        //do different stuff when player is leveling up mid-game
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
+})
+
+characterStatBackBtn.addEventListener('click', (event) => {
+    nextScreen = startScreen
+    toggleScreen()
 })
 
 closeGenericModalBtn.addEventListener('click', (event) => {
