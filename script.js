@@ -11,6 +11,7 @@ const playerNameSpan = document.querySelectorAll('.playerNameSpan')
 const allStatDecrementers = document.querySelectorAll('.statDecrementers')
 const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
+const cutsceneElements = document.querySelectorAll('#cutscene > h1')
 
 //GET ELEMENT BY ID VARIABLES
 const loadBtn = document.getElementById('loadButton')
@@ -29,14 +30,15 @@ const statAdjustCol = document.getElementById('adjustColumn')
 const genericModal = document.getElementById('genericModal')
 const genericModalTextEl = document.getElementById('genericModalText')
 const closeGenericModalBtn = document.getElementById('closeGenericModal')
-const cutsceneContainer = document.getElementById('cutsceneContainer')
-const cutsceneEl = document.getElementById('cutscene')
+const cutsceneContainer = document.getElementById('cutscene')
+const endCutsceneBtn = document.getElementById('endCutscene')
+const battleScreen = document.getElementById('battleScreen')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
 let playerCanChangeStats = true
-let currentScreen = startScreen
-let nextScreen = ''
+let currentScreen = null
+let nextScreen = startScreen
 let isPlayerLevelingUp = false
 
 //
@@ -74,15 +76,27 @@ const enemyGladiator = new Gladiator(0,0,0,0,0,0,0,0)
 //Got this one from stackoverflow and modified it: https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
 const unfade = (element, fadeSpeed) => {
     let op = 0.1;  // initial opacity
-    element.style.display = 'flex';
+    element.style.display = 'flex'
     let timer = setInterval(function () {
         if (op >= 1){
-            clearInterval(timer);
+            clearInterval(timer)
         }
-        element.style.opacity = op;
-        op += op * 0.1;
-    }, fadeSpeed);
+        element.style.opacity = op
+        op += op * 0.1
+    }, fadeSpeed)
 }
+
+// const fade = (element, fadeSpeed) => {
+//     let op = 1  // initial opacity
+//     let timer = setInterval(function () {
+//         if (op >= 1){
+//             clearInterval(timer)
+//             element.style.display = 'none'
+//         }
+//         element.style.opacity = op
+//         op -= op * 0.1
+//     }, fadeSpeed)
+// }
 
 const playSound = (sound) => {
     if(sound==simpleClick) {sound.currentTime = 0}
@@ -96,9 +110,16 @@ const renderStats = () => {
     })
 }
 
-const toggleScreen = () => {
-    currentScreen.style.display = 'none'
-    nextScreen.style.display = 'flex'
+const toggleScreen = (fadeType) => {
+    if(fadeType === 'none') {
+        if(currentScreen != null) {currentScreen.style.display = 'none'}
+        nextScreen.style.display = 'flex'
+    } else if(fadeType === 'fadeIn') {
+        if(currentScreen != null) {currentScreen.style.display = 'none'}
+        unfade(nextScreen, 100)
+    } // else if(fadeType === 'fadeOut') {
+    // NOT CURRENTLY USING FADE OUT
+    // }
     currentScreen = nextScreen
 }
 
@@ -107,8 +128,16 @@ const displayGenericModal = (modalText) => {
     genericModal.style.display = 'flex'
 }
 
-const initiateCutscene = () => {
-
+const renderCutscene = (postCutsceneScreen) => {
+    nextScreen = postCutsceneScreen
+    let element = 0
+    while (element < cutsceneElements.length) {
+        // setTimeout(() => {
+        //     unfade(cutsceneElements[element], 50)
+        // }, 5000)
+        setTimeout(unfade(cutsceneElements[element], 50), 5000)
+        element += 1
+    }
 }
 
 //
@@ -130,7 +159,8 @@ loadBtn.addEventListener('click', (event) => {
     musicRepeatInterval = setInterval(() =>{
         playSound(startMusic)
     ,180000})
-    unfade(startScreen, 150)
+    nextScreen = startScreen
+    toggleScreen('fadeIn')
 })
 
 howToPlayBtn.addEventListener('click', (event) => {
@@ -172,7 +202,7 @@ startGameBtn.addEventListener('click', (event) => {
         span.textContent = playerGladiator.name
     })
     nextScreen = characterStatScreen
-    toggleScreen()
+    toggleScreen('none')
 })
 
 allStatDecrementers.forEach(button => {
@@ -203,8 +233,8 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         startMusic.pause()
         clearInterval(musicRepeatInterval)
         nextScreen = cutsceneContainer
-        toggleScreen()
-        initiateCutscene()
+        toggleScreen('none')
+        renderCutscene(battleScreen)
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
@@ -212,7 +242,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
 
 characterStatBackBtn.addEventListener('click', (event) => {
     nextScreen = startScreen
-    toggleScreen()
+    toggleScreen('none')
 })
 
 closeGenericModalBtn.addEventListener('click', (event) => {
