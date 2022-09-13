@@ -50,7 +50,7 @@ let isPlayerLevelingUp = false
 //
 
 class Gladiator {
-    constructor(name, strength, attack, defense, vitality, stamina, charisma, statPoints) {
+    constructor(name=0, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, statPoints=5) {
         this.name = name
         this.strength = strength
         this.attack = attack
@@ -60,10 +60,46 @@ class Gladiator {
         this.charisma = charisma
         this.statPoints = statPoints
     }
+
+    incrementStat = (stat) => {
+        if(this.statPoints > 0 && playerCanChangeStats === true) {
+            this[stat] += 1
+            this.statPoints -= 1
+            renderStats()
+        }
+    }
+
+    decrementStat = (stat) => {
+        if(this[stat] > 0  && playerCanChangeStats === true) {
+            this[stat] -= 1
+            this.statPoints += 1
+            renderStats()
+        }
+    }
+
 }
 
-const playerGladiator = new Gladiator(0,0,0,0,0,0,0,5)
-const enemyGladiator = new Gladiator(0,0,0,0,0,0,0,0)
+class Cutscene {
+    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText) {
+        this.cutsceneText = [firstElText, secondElText, thirdElText, fourthElText, buttonText]
+    }
+
+    fillCutsceneText = () => {
+        for (let index = 0; index < cutsceneElements.length; index++) {
+            cutsceneElements[index].textContent = this.cutsceneText[index]
+        }
+    }
+}
+
+const playerGladiator = new Gladiator()
+const enemyGladiator = new Gladiator()
+const firstCutscene = new Cutscene(
+    firstElText = 'Your heart pounds in your chest as you approach the gate to the arena grounds. You hear the murmurs of the barely interested crowd.',
+    secondElText = 'Your hand firmly grips a rusty, pathetic excuse for a weapon, hardly worthy of one who would call themselves a gladiator.',
+    thirdElText = 'However, this is an opportunity that will likely never present itself again. This is your chance to make a name for yourself; the start of your story.',
+    fourthElText = 'Rising, the gate groans and scrapes and squeals, and the sudden rush of anticipation from the crowd washes over you. There is only one path in front of you now.',
+    buttonText = `IT'S TIME TO FIGHT.`
+)
 
 //
 //
@@ -86,7 +122,11 @@ const delay = (time) => {
 //Got this one from stackoverflow and modified it: https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
 const unfade = (element, fadeSpeed) => {
     let op = 0.1;  // initial opacity
-    element.style.display = 'flex'
+    if(element.tagName === 'DIV') {
+        element.style.display = 'flex'
+    } else {
+        element.style.display = 'block'
+    }
     let timer = setInterval(function () {
         if (op >= 1){
             clearInterval(timer)
@@ -139,15 +179,17 @@ const displayGenericModal = (modalText) => {
 }
 
 //Promise chains make my brain hurt
-const renderCutscene = (postCutsceneScreen) => {
+const renderCutscene = (cutscene, postCutsceneScreen) => {
+    cutsceneMusic.play()
+    cutscene.fillCutsceneText()
     nextScreen = postCutsceneScreen
     let promise = Promise.resolve()
     for (const element of cutsceneElements) {
         promise = promise
-            .then(() => delay(5000))
+            .then(() => delay(3000))
             .then(() => {
                 unfade(element, 50)
-                return delay(500)
+                return delay(2000)
             })
     }
 }
@@ -219,23 +261,13 @@ startGameBtn.addEventListener('click', (event) => {
 
 allStatDecrementers.forEach(button => {
     button.addEventListener('click', (event) => {
-        stat = button.getAttribute('stat')
-        if(playerGladiator[stat] > 0  && playerCanChangeStats === true) {
-            playerGladiator[stat] -= 1
-            playerGladiator.statPoints += 1
-            renderStats()
-        }
+        playerGladiator.decrementStat(button.getAttribute('stat'))
     })
 })
 
 allStatIncrementers.forEach(button => {
     button.addEventListener('click', (event) => {
-        stat = button.getAttribute('stat')
-        if(playerGladiator.statPoints > 0 && playerCanChangeStats === true) {
-            playerGladiator[stat] += 1
-            playerGladiator.statPoints -= 1
-            renderStats()
-        }
+        playerGladiator.incrementStat(button.getAttribute('stat'))
     })
 })
 
@@ -246,7 +278,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         clearInterval(musicRepeatInterval)
         nextScreen = cutsceneContainer
         toggleScreen('none')
-        renderCutscene(battleScreen)
+        renderCutscene(firstCutscene, battleScreen)
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
@@ -259,4 +291,10 @@ characterStatBackBtn.addEventListener('click', (event) => {
 
 closeGenericModalBtn.addEventListener('click', (event) => {
     genericModal.style.display = 'none'
+})
+
+endCutsceneBtn.addEventListener('click', (event) => {
+    toggleScreen('none')
+    cutsceneMusic.currentTime = 0
+    cutsceneMusic.pause()
 })
