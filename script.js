@@ -11,7 +11,7 @@ const playerNameSpan = document.querySelectorAll('.playerNameSpan')
 const allStatDecrementers = document.querySelectorAll('.statDecrementers')
 const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
-const cutsceneElements = document.querySelectorAll('#cutscene > h1')
+const cutsceneElements = document.querySelectorAll('.cutsceneEl')
 
 //GET ELEMENT BY ID VARIABLES
 const loadBtn = document.getElementById('loadButton')
@@ -73,6 +73,16 @@ const enemyGladiator = new Gladiator(0,0,0,0,0,0,0,0)
 //
 //
 
+
+//Got this one from my software engineer friend and now my brain hurts, but I think I understand callback hell
+const delay = (time) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(null)
+        }, time)
+    })
+}
+
 //Got this one from stackoverflow and modified it: https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
 const unfade = (element, fadeSpeed) => {
     let op = 0.1;  // initial opacity
@@ -128,15 +138,17 @@ const displayGenericModal = (modalText) => {
     genericModal.style.display = 'flex'
 }
 
+//Promise chains make my brain hurt
 const renderCutscene = (postCutsceneScreen) => {
     nextScreen = postCutsceneScreen
-    let element = 0
-    while (element < cutsceneElements.length) {
-        // setTimeout(() => {
-        //     unfade(cutsceneElements[element], 50)
-        // }, 5000)
-        setTimeout(unfade(cutsceneElements[element], 50), 5000)
-        element += 1
+    let promise = Promise.resolve()
+    for (const element of cutsceneElements) {
+        promise = promise
+            .then(() => delay(5000))
+            .then(() => {
+                unfade(element, 50)
+                return delay(500)
+            })
     }
 }
 
