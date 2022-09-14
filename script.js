@@ -52,6 +52,7 @@ let isPlayerLevelingUp = false
 let activeCutscene = null
 let crowdBarPercentage = 0.1
 let combatRound = 1
+let enemyTurn = false
 
 //
 //
@@ -90,6 +91,21 @@ const cutscenes = [
     )
 ]
 
+class Debuff {
+    constructor(debuffName, debuffMultiplier, expiration) {
+        this.debuffName = debuffName
+        this.debuffMultiplier = debuffMultiplier
+        this.expiration = expiration
+    }
+}
+
+const allDebuffs = [
+    enraged = new Debuff('ENRAGED', 0.5, 2),
+    distracted = new Debuff('DISTRACTED', 1.5, 3),
+    exasperated = new Debuff('EXASPERATED', 0.5, 0),
+    countered = new Debuff('COUNTERED', null, 0)
+]
+
 class Equipment {
     constructor(itemName, description, price, purchased, equipped) {
         this.itemName = itemName
@@ -106,21 +122,6 @@ class Equipment {
         //give player option to equip after purchasing or prompt to equip in inventory
     }
 }
-
-class Debuff {
-    constructor(debuffName, debuffMultiplier, expiration) {
-        this.debuffName = debuffName
-        this.debuffMultiplier = debuffMultiplier
-        this.expiration = expiration
-    }
-}
-
-const allDebuffs = [
-    enraged = new Debuff('ENRAGED', 0.5, 2),
-    distracted = new Debuff('DISTRACTED', 1.5, 3),
-    exasperated = new Debuff('EXASPERATED', 0.5, 0),
-    countered = new Debuff('COUNTERED', null, 0)
-]
 
 class Weapon extends Equipment {
     constructor(itemName, description, price, purchased, equipped, minDamage, maxDamage) {
@@ -156,8 +157,9 @@ const allArmor = [
 
 class Gladiator {
     constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50,
-        armorRemaining=0, maxArmor=0, debuff='NONE', debuffClear=null, statPoints=5, strength=0, attack=0, defense=0, vitality=0, 
-        stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
+        armorRemaining=0, maxArmor=0, debuff='NONE', debuffClear=null, statPoints=5, 
+        strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, 
+        gold=0, defeatedOpponents=0, experienceReward=0, goldReward=0) {
         this.gladiatorName = gladiatorName
         this.level = level
         this.health = health
@@ -178,6 +180,8 @@ class Gladiator {
         this.experience = experience
         this.gold = gold
         this.defeatedOpponents = defeatedOpponents
+        this.experienceReward = experienceReward
+        this.goldReward = goldReward
     }
 
     equippedItems = [
@@ -230,7 +234,7 @@ class Gladiator {
             let totalDamage = this.calcDamage(attackType)
             this.checkArmor(totalDamage, target)
         } else {
-            if (this.checkEnergy() === false) {return}
+            if (this.checkEnergy() === false) {return true}
             this.energy -= this.calcEnergy(attackType)
             this.calcCrowd(attackType)
             let hitChance = this.calcAccuracy(attackType, target.defense, target)
@@ -246,6 +250,7 @@ class Gladiator {
         }
         target.checkHealth()
         renderStats()
+        return false
     }
 
     checkEnergy() {
@@ -352,10 +357,19 @@ class Gladiator {
     }
 
     checkHealth() {
-
+        if (this.health <= 0) {
+            if (this === enemyGladiator) {
+                this.generateBattleMessage('victory', null)
+            } else {
+                //game over
+            }
+        }
     }
 
     taunt(target) {
+        if (this.checkEnergy() === false) {return true}
+        this.energy -= 10
+        this.calcCrowd('taunt')
         let successChance = this.calcAccuracy('taunt', target.charisma, target)
         if (Math.random() < successChance) {
             let rng = Math.random()
@@ -373,19 +387,21 @@ class Gladiator {
             target.debuffClear = combatRound + target.debuff.expiration
         }
         renderStats()
+        return false
     }
 
     winTheCrowd() {
-        if (this.checkEnergy() === false) {return}
+        if (this.checkEnergy() === false) {return true}
         this.energy -= 10
         this.calcCrowd('winTheCrowd')
         renderStats()
+        return false
     }
 
     rest() {
         if (this.energy === this.maxEnergy) {
             displayGenericModal('Your energy is already full.')
-            return
+            return true
         }
         this.energy += this.maxEnergy * 0.5
         this.health += this.maxHealth * 0.05
@@ -393,10 +409,13 @@ class Gladiator {
         if (this.health > this.maxHealth) {this.health = this.maxHealth}
         this.calcCrowd('rest')
         renderStats()
+        return false
     }
 
-    generateBattleMessage(actionType, succeeded) {
+    generateBattleMessage(messageType, succeeded) {
+        if (messageType === 'victory') {
 
+        }
     }
 
     enemyAction() {
@@ -405,7 +424,7 @@ class Gladiator {
 }
 
 const playerGladiator = new Gladiator()
-const enemyGladiator = new Gladiator('New Blood')
+const enemyGladiator = new Gladiator()
 
 //
 //
@@ -523,8 +542,21 @@ function renderCutscene(cutscene) {
 function startBattle() {
     playSound(battleMusic)
     renderStats()
+    combatRound = 1
     crowdBar.style.width = `${crowdBarPercentage * 100}%`
-    battleMessages.innerText = `The crowd looks on with curiosity as you engage your opponent.`
+}
+
+function progressBattle() {
+    if (enemyGladiator.debuff != countered) {
+        enemyTurn = true
+        setTimeout(() => {
+            enemyTurn = false
+        },4000)
+    }
+}
+
+function endBattle(condition) {
+
 }
 
 //
@@ -634,13 +666,20 @@ endCutsceneBtn.addEventListener('click', (event) => {
 
 allActionBtns.forEach(button => {
     button.addEventListener('click', (event) => {
-        let buttonID = button.getAttribute('id')
-        if (buttonID === 'light' || buttonID === 'medium' || buttonID === 'heavy') {
-            playerGladiator.makeAttack(enemyGladiator, buttonID)
-        } else if (buttonID === 'taunt') {
-            playerGladiator.taunt(enemyGladiator)
+        if (enemyTurn === false) {
+            let playerTookNoAction = false
+            let buttonID = button.getAttribute('id')
+            if (buttonID === 'light' || buttonID === 'medium' || buttonID === 'heavy') {
+                playerTookNoAction = playerGladiator.makeAttack(enemyGladiator, buttonID)
+            } else if (buttonID === 'taunt') {
+                playerTookNoAction = playerGladiator.taunt(enemyGladiator)
+            } else {
+                playerTookNoAction = playerGladiator[buttonID]()
+            }
+            console.log(playerTookNoAction)
+            if (playerTookNoAction === false) {progressBattle()}
         } else {
-            playerGladiator[buttonID]()
+            displayGenericModal(`It is your enemy's turn.`)
         }
     })
 })
