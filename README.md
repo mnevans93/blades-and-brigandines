@@ -10,14 +10,14 @@
                 Medium attacks become 5% more accurate every level
                 Heavy attacks become 2.5% more accurate every level
 
-            Strength - determines how much bonus damage the gladiator's attacks do. Level 0 strength is zero bonus damage with each point of strength increasing base damage by 5 points. Each level of strength also increases the base stamina requirement of each attack style by 20% of its initial value
-                Light attacks require 10 base stamina + 2 for every strength level
-                Medium attacks require 25 base stamina + 5 for every strength level
-                Heavy attacks require 40 base stamina + 8 for every strength level
+            Strength - determines how much bonus damage the gladiator's attacks do. Level 0 strength is zero bonus damage with each point of strength increasing base damage. Each level of strength also increases the base stamina requirement of each attack style by 20% of its initial value
+                Light attacks require 10 base stamina + 2 for every strength level and deal 2 bonus damage per strength level
+                Medium attacks require 25 base stamina + 5 for every strength level and deal 5 bonus damage per strength level
+                Heavy attacks require 40 base stamina + 8 for every strength level and deal 10 bonus damage per strength level
 
             Defense - determines how hard it is to hit the gladiator. Directly counteracts attacker's attack stat. Each point of defense increases chance to block the attack by the same percentages shown in attack
 
-            Vitality - determines gladiator's health scaling. At level 0 vitality, gladiators have 20 HP, and each character level, they gain 20 additional base HP. Each point of vitality grants an additional 2 HP per level-up on top of the base of 20. This is retroactive so leveling vitality at higher character levels will take into account all previous levels as well
+            Vitality - determines gladiator's health scaling. At level 0 vitality, gladiators have 20 HP, and each character level, they gain 20 additional base HP. Each point of vitality grants an additional 5 HP per level-up on top of the base of 20. This is retroactive so leveling vitality at higher character levels will take into account all previous levels as well
 
             Stamina - determines gladiator's stamina pool scaling. At level 1, gladiators have 50 stamina, and each level they gain an additional 50 stamina. Each point of stamina grants an additional 10 stamina per level-up on top of the base 50. This is retroactive so leveling stamina at higher levels will take into account all previous levels as well
                 Rest: This action restores 50% of the gladiator's stamina. Not usable if stamina is full. Only available action if gladiator has <= 0 stamina on their turn
@@ -73,7 +73,7 @@
                     30% chance - Distracted - Increases your chance to hit your opponent by 50% on your next attack. Expires at the end of your next turn
                     30% chance - Exasperated - Reduces opponent's stamina by 50% of current total
                     10% chance - Countered - Skip opponent's next turn and hit them with a free light attack
-            Win the Crowd: This action raises the crowd's engagement in the battle by a minimum of 20%. Crowd engagement scales from 0 to 100% and acts as a bonus to gold earned from a fight with 100% engagement rewarding a win with 2x the gold. Each point of charisma increases crowd engagement by 5%, so a gladiator with level 10 charisma would raise crowd engagement by 70%
+            Win the Crowd: This action raises the crowd's engagement in the battle by a minimum of 10%. Crowd engagement scales from 0 to 100% and acts as a bonus to gold earned from a fight with 100% engagement rewarding a win with 2x the gold. Each point of charisma increases crowd engagement by 5%, so a gladiator with level 10 charisma would raise crowd engagement by 60%
             Yield: Player yields early. Not available in fights to the death
         Reward screen:
             Player receives gold and experience based on level of their opponent

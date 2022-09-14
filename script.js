@@ -7,7 +7,7 @@ startMusic.loop = true
 const cutsceneMusic = new Audio('Audio/anxiety.mp3')
 cutsceneMusic.loop = true
 const battleMusic = new Audio('Audio/stopWar.mp3')
-battleMusic.volume = 0.25
+battleMusic.volume = 0.15
 battleMusic.loop = true
 
 //QUERY SELECTOR ALL VARIABLES
@@ -18,6 +18,7 @@ const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
 const cutsceneElements = document.querySelectorAll('.cutsceneEl')
 const allActionBtns = document.querySelectorAll('.action')
+const enemyStats = document.querySelectorAll('.enemyStat')
 
 //GET ELEMENT BY ID VARIABLES
 const loadBtn = document.getElementById('loadButton')
@@ -40,6 +41,7 @@ const cutsceneContainer = document.getElementById('cutscene')
 const endCutsceneBtn = document.getElementById('endCutscene')
 const battleScreen = document.getElementById('battleScreen')
 const battleMessages = document.getElementById('battleMessages')
+const crowdBar = document.getElementById('crowd')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
@@ -48,6 +50,7 @@ let currentScreen = null
 let nextScreen = startScreen
 let isPlayerLevelingUp = false
 let activeCutscene = null
+let crowdBarPercentage = 0.1
 
 //
 //
@@ -81,7 +84,8 @@ const cutscenes = [
         buttonText = `IT'S TIME TO FIGHT.`,
         postCutsceneScreen = battleScreen,
         postCutsceneMusic = battleMusic,
-        postCutsceneMusicInterval = 75000
+        postCutsceneMusicInterval = 75000,
+        postCutsceneBattle = true
     )
 ]
 
@@ -115,7 +119,7 @@ class Weapon extends Equipment {
 }
 
 const allWeapons = [
-    rustyBlade = new Weapon('Rusty Blade', `Not much of a weapon, but it'll have to do for now.`, 0, true, true, 0, 5),
+    rustyBlade = new Weapon('Rusty Blade', `Not much of a weapon, but it'll have to do for now.`, 0, true, true, 1, 5),
     serratedKnife = new Weapon('Serrated Knife', `Sharper than what you started with, but... isn't this just a steak knife?`, 100, false, false, 5, 10),
     shortsword = new Weapon('Shortsword', `Finally, a real weapon.`, 250, false, false, 10, 20),
     longsword = new Weapon('Longsword', `This blade has some real heft to it. This will do nicely...`, 1000, false, false, 20, 35),
@@ -142,9 +146,15 @@ const allArmor = [
 ]
 
 class Gladiator {
-    constructor(name=0, level=1, statPoints=5, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
-        this.name = name
+    constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50, armorRemaining=0, maxArmor=0, statPoints=5, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
+        this.gladiatorName = gladiatorName
         this.level = level
+        this.health = health
+        this.maxHealth = maxHealth
+        this.energy = energy
+        this.maxEnergy = maxEnergy
+        this.armorRemaining = armorRemaining
+        this.maxArmor = maxArmor
         this.statPoints = statPoints
         this.strength = strength
         this.attack = attack
@@ -178,21 +188,40 @@ class Gladiator {
         }
     }
 
-    makeAttack(target, attackType) {
-        if (this.stamina <= 0) {
-            displayGenericModal('You do not have the stamina to perform this action.')
-            return
-        }
+    adjustSecondaryStats() {
+        this.maxHealth = (20 + 4 * this.vitality) * this.level
+        this.maxEnergy = (50 + 10 * this.stamina) * this.level
+        this.health = this.maxHealth
+        this.energy = this.maxEnergy
+    }
 
-        stamina -= this.calcStamina(attackType)
+    levelUp() {
+        isPlayerLevelingUp = true
+        level += 1
+        //not finished
+    }
+
+    makeAttack(target, attackType) {
+        if (this.checkEnergy() === false) {return}
+        this.energy -= this.calcEnergy(attackType)
+        this.calcCrowd(attackType)
         let hitChance = this.calcAccuracy(attackType, target.defense)
         if (Math.random() <= hitChance) {
             let damage = this.calcDamage(attackType) * this.checkIfCritical(attackType)
-
+            //not finished
         }
+        renderStats()
     }
 
-    calcStamina(attackType) {
+    checkEnergy() {
+        if (this.energy <= 0) {
+            displayGenericModal('You do not have the energy to perform this action.')
+            return false
+        }
+        return true
+    }
+
+    calcEnergy(attackType) {
         if (attackType === 'light') {
             return 10 + 2 * this.strength
         } else if (attackType === 'medium') {
@@ -240,7 +269,26 @@ class Gladiator {
     }
 
     calcDamage(attackType) {
-        
+
+    }
+
+    calcCrowd(action) {
+        if (action === 'winTheCrowd') {
+            crowdBarPercentage += 0.1 + this.charisma * 0.05
+        } else if (action === 'taunt') {
+            crowdBarPercentage += 0.01 + this.charisma * 0.01
+        } else if (action === 'light') {
+            crowdBarPercentage += 0.025
+        } else if (action === 'medium') {
+            crowdBarPercentage += 0.05
+        } else if (action === 'heavy') {
+            crowdBarPercentage += 0.1
+        } else if (action === 'rest') {
+            crowdBarPercentage -= 0.05
+        }
+        if (crowdBarPercentage > 1) {crowdBarPercentage = 1}
+        if (crowdBarPercentage < 0) {crowdBarPercentage = 0}
+        crowdBar.style.width = `${crowdBarPercentage * 100}%`
     }
 
     checkHealth() {
@@ -252,11 +300,21 @@ class Gladiator {
     }
 
     winTheCrowd() {
-        
+        if (this.checkEnergy() === false) {return}
+        this.energy -= 10
+        this.calcCrowd('winTheCrowd')
+        renderStats()
     }
 
     rest() {
-        
+        if (this.energy === this.maxEnergy) {
+            displayGenericModal('Your energy is already full.')
+            return
+        }
+        this.energy += this.maxEnergy * 0.5
+        if (this.energy > this.maxEnergy) {this.energy = this.maxEnergy}
+        this.calcCrowd('rest')
+        renderStats()
     }
 
     generateBattleMessage(actionType, succeeded) {
@@ -269,7 +327,7 @@ class Gladiator {
 }
 
 const playerGladiator = new Gladiator()
-const enemyGladiator = new Gladiator()
+const enemyGladiator = new Gladiator('New Blood')
 
 //
 //
@@ -318,29 +376,33 @@ const unfade = (element, fadeSpeed) => {
 //     }, fadeSpeed)
 // }
 
-const playSound = (sound) => {
-    if (sound === simpleClick) {sound.currentTime = 0}
+function playSound(sound) {
+    if (sound === simpleClick) { sound.currentTime = 0} 
     sound.play()
 }
 
-const pauseSound = (sound) => {
+function pauseSound(sound) {
     sound.currentTime = 0
     sound.pause()
 }
 
-const renderStats = () => {
+function renderStats() {
     statLists.forEach(span => {
         stat = span.getAttribute('stat')
         span.textContent = playerGladiator[stat]
     })
+    enemyStats.forEach(span => {
+        stat = span.getAttribute('stat')
+        span.textContent = enemyGladiator[stat]
+    })
 }
 
-const toggleScreen = (fadeType) => {
-    if(fadeType === 'none') {
-        if(currentScreen != null) {currentScreen.style.display = 'none'}
+function toggleScreen(fadeType) {
+    if (fadeType === 'none') {
+        if (currentScreen != null) { currentScreen.style.display = 'none'} 
         nextScreen.style.display = 'flex'
-    } else if(fadeType === 'fadeIn') {
-        if(currentScreen != null) {currentScreen.style.display = 'none'}
+    } else if (fadeType === 'fadeIn') {
+        if (currentScreen != null) { currentScreen.style.display = 'none'} 
         unfade(nextScreen, 100)
     } // else if(fadeType === 'fadeOut') {
     // NOT CURRENTLY USING FADE OUT
@@ -348,12 +410,12 @@ const toggleScreen = (fadeType) => {
     currentScreen = nextScreen
 }
 
-const displayGenericModal = (modalText) => {
+function displayGenericModal(modalText) {
     genericModalTextEl.innerText = modalText
     genericModal.style.display = 'flex'
 }
 
-const renderCutscene = (cutscene) => {
+function renderCutscene(cutscene) {
     activeCutscene = cutscene
     playSound(cutsceneMusic)
     cutscene.fillCutsceneText()
@@ -368,8 +430,10 @@ const renderCutscene = (cutscene) => {
     }
 }
 
-const startBattle = () => {
+function startBattle() {
     playSound(battleMusic)
+    renderStats()
+    crowdBar.style.width = `${crowdBarPercentage * 100}%`
 }
 
 //
@@ -424,12 +488,12 @@ assetsBtn.addEventListener('click', (event) => {
 
 startGameBtn.addEventListener('click', (event) => {
     if(nameInput.value != '') {
-        playerGladiator.name = nameInput.value
+        playerGladiator.gladiatorName = nameInput.value
     } else {
-        playerGladiator.name = 'Nameless One'
+        playerGladiator.gladiatorName = 'Nameless One'
     }
     playerNameSpan.forEach(span => {
-        span.textContent = playerGladiator.name
+        span.textContent = playerGladiator.gladiatorName
     })
     nextScreen = characterStatScreen
     toggleScreen('none')
@@ -457,6 +521,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
+    playerGladiator.adjustSecondaryStats()
 })
 
 characterStatBackBtn.addEventListener('click', (event) => {
@@ -472,6 +537,7 @@ endCutsceneBtn.addEventListener('click', (event) => {
     pauseSound(cutsceneMusic)
     playSound(activeCutscene.postCutsceneMusic)
     nextScreen = activeCutscene.postCutsceneScreen
+    if (postCutsceneBattle === true) {startBattle()}
     toggleScreen('none')
 })
 

@@ -126,18 +126,18 @@
     <div id="battleScreen">
         <div id="playerBattle">
             <div id="playerInfo">
-                <h1><span class="playerNameSpan">Nameless One</span></h1>
+                <h1><span class="playerNameSpan"></span></h1>
                 <div class="battleStatDisplay">
                     <h2>HEALTH:</h2>
-                    <h2 id="playerHealth">20</h2>
+                    <h2><span class="statList" stat="health" id="playerHealth">20</span> / <span class="statList" stat="maxHealth" id="playerMaxHealth">20</span></h2>
                 </div>
                 <div class="battleStatDisplay">
                     <h2>ENERGY:</h2>
-                    <h2 id="playerEnergy">40</h2>
+                    <h2><span class="statList" stat="energy" id="playerEnergy">40</span> / <span class="statList" stat="maxEnergy" id="playerMaxEnergy">40</span></h2>
                 </div>
                 <div class="battleStatDisplay">
                     <h2>ARMOR:</h2>
-                    <h2 id="playerArmor">0</h2>
+                    <h2><span class="statList" stat="armorRemaining" id="playerArmor">0</span> / <span class="statList" stat="maxArmor" id="playerMaxArmor">0</span></h2>
                 </div>
             </div>
             <div id="playerActionsContainer">
@@ -152,21 +152,22 @@
             </div>
         </div>
         <div id="enemyBattle">
-            <h1><span id="enemyName">Enemy</span></h1>
+            <h1><span class="enemyStat" stat="gladiatorName" id="enemyName"></span></h1>
             <div class="battleStatDisplay">
                 <h2>HEALTH:</h2>
-                <h2 id="enemyHealth">20</h2>
+                <h2><span class="enemyStat" stat="health" id="enemyHealth"></span> / <span class="enemyStat" stat="maxHealth" id="enemyMaxHealth"></span></h2>
             </div>
             <div class="battleStatDisplay">
                 <h2>ENERGY:</h2>
-                <h2 id="enemyEnergy">40</h2>
+                <h2><span class="enemyStat" stat="energy" id="enemyEnergy"></span> / <span class="enemyStat" stat="maxEnergy" id="enemyMaxEnergy"></span></h2>
             </div>
             <div class="battleStatDisplay">
                 <h2>ARMOR:</h2>
-                <h2 id="enemyArmor">0</h2>
+                <h2><span class="enemyStat" stat="armorRemaining" id="enemyArmor"></span> / <span class="enemyStat" stat="maxArmor" id="enemyMaxArmor"></span></h2>
             </div>
         </div>
         <div id="battleMessagesContainer">
+            <div id="crowd">Crowd</div>
             <h1 id="battleMessages">Test</h1>
             <button id="leaveBattle">CONTINUE...</button>
         </div>
