@@ -162,7 +162,7 @@ class Gladiator {
         this.armor = plainClothing
     ]
 
-    incrementStat(stat) {
+    increaseStat(stat) {
         if(this.statPoints > 0 && playerCanChangeStats === true) {
             this[stat] += 1
             this.statPoints -= 1
@@ -170,7 +170,7 @@ class Gladiator {
         }
     }
 
-    decrementStat(stat) {
+    decreaseStat(stat) {
         if(this[stat] > 0  && playerCanChangeStats === true) {
             this[stat] -= 1
             this.statPoints += 1
@@ -179,7 +179,72 @@ class Gladiator {
     }
 
     makeAttack(target, attackType) {
+        if (this.stamina <= 0) {
+            displayGenericModal('You do not have the stamina to perform this action.')
+            return
+        }
+
+        stamina -= this.calcStamina(attackType)
+        let hitChance = this.calcAccuracy(attackType, target.defense)
+        if (Math.random() <= hitChance) {
+            let damage = this.calcDamage(attackType) * this.checkIfCritical(attackType)
+
+        }
+    }
+
+    calcStamina(attackType) {
+        if (attackType === 'light') {
+            return 10 + 2 * this.strength
+        } else if (attackType === 'medium') {
+            return 25 + 5 * this.strength
+        } else {
+            return 40 + 8 * this.strength
+        }
+    }
+
+    calcAccuracy(action, targetStat) {
+        let statDelta = null
+        let calcAccuracy = null
+
+        if (action === 'light' || action === 'medium' || action === 'heavy') {
+            statDelta = this.attack - targetStat
+        } else if (action === 'taunt') {
+            statDelta = this.charisma - targetStat
+            calcAccuracy = 0.5 + statDelta * 0.05
+            if (calcAccuracy < 0.2) {calcAccuracy = 0.2}
+        }
+
+        if (action === 'light') {
+            calcAccuracy = 0.75 + statDelta * 0.1
+            if (calcAccuracy < 0.33) {calcAccuracy = 0.33}
+            
+        } else if (action === 'medium') {
+            calcAccuracy = 0.5 + statDelta * 0.05
+            if (calcAccuracy < 0.2) {calcAccuracy = 0.2}
+        } else if (action === 'heavy') {
+            calcAccuracy = 0.25 + statDelta * 0.025
+            if (calcAccuracy < 0.1) {calcAccuracy = 0.1}
+        }
+        return calcAccuracy
+    }
+
+    checkIfCritical(attackType) {
+        if (attackType === 'light') {
+            if (Math.random() < 0.05) {return 2}
+        } else if (attackType === 'medium') {
+            if (Math.random() < 0.10) {return 2}
+        } else if (attackType === 'heavy') {
+            if (Math.random() < 0.20) {return 2}
+        }
+        return 1
+    }
+
+    calcDamage(attackType) {
         
+    }
+
+    checkHealth() {
+
     }
 
     taunt(target) {
@@ -288,7 +353,6 @@ const displayGenericModal = (modalText) => {
     genericModal.style.display = 'flex'
 }
 
-//Promise chains make my brain hurt
 const renderCutscene = (cutscene) => {
     activeCutscene = cutscene
     playSound(cutsceneMusic)
@@ -373,13 +437,13 @@ startGameBtn.addEventListener('click', (event) => {
 
 allStatDecrementers.forEach(button => {
     button.addEventListener('click', (event) => {
-        playerGladiator.decrementStat(button.getAttribute('stat'))
+        playerGladiator.decreaseStat(button.getAttribute('stat'))
     })
 })
 
 allStatIncrementers.forEach(button => {
     button.addEventListener('click', (event) => {
-        playerGladiator.incrementStat(button.getAttribute('stat'))
+        playerGladiator.increaseStat(button.getAttribute('stat'))
     })
 })
 
