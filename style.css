@@ -239,14 +239,6 @@ th, td {
     text-align: center;
 }
 
-#battleScreen {
-    display: none;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: auto;
-    text-align: center;
-}
-
 #playerBattle {
     display: flex;
     flex-direction: column;
@@ -322,4 +314,12 @@ th, td {
     display: none;
     margin: 25px;
     font-size: 24px;
+}
+
+#battleScreen {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: auto;
+    text-align: center;
 }
