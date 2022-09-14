@@ -3,6 +3,7 @@
 :root {
     --game-background-image: url('Images/mainBackground.jfif');
     --textbox-and-cutscene-background-image: url('Images/textboxBackground.jpg');
+    --arena-background-image: url('Images/Arena Background.png');
     --text-and-border: rgb(202, 37, 37);
     --on-hover: white;
 }
@@ -236,4 +237,89 @@ th, td {
 	padding: 0.5%;
 	line-height: 120%;
     text-align: center;
+}
+
+#battleScreen {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: auto;
+    text-align: center;
+}
+
+#playerBattle {
+    display: flex;
+    flex-direction: column;
+    background-image: var(--textbox-and-cutscene-background-image);
+    margin: 2%;
+    width: 45%;
+    border: solid var(--text-and-border) 2px;
+    border-radius: 25px;
+}
+
+#playerInfo {
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.battleStatDisplay {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.battleStatDisplay > h2 {
+    display: inline-block;
+}
+
+#playerActionsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2%;
+    text-align: center;
+}
+
+#playerActionsContainer > button {
+    width: 20%;
+    height: 50%;
+    font-size: 1.25em;
+}
+
+#playerAttacks {
+    flex-direction: column;
+    width: 25%;
+}
+
+#playerAttacks > button {
+    width: 100%;
+    margin: 1%;
+    padding: 10px 20px 10px 20px;
+    font-size: 1.25em;
+}
+
+#enemyBattle {
+    display: flex;
+    flex-direction: column;
+    background-image: var(--textbox-and-cutscene-background-image);
+    margin: 2%;
+    width: 45%;
+    border: solid var(--text-and-border) 2px;
+    border-radius: 25px;
+}
+
+#battleMessagesContainer {
+    background-image: var(--textbox-and-cutscene-background-image);
+    position: fixed;
+    text-align: center;
+    bottom: 25px;
+    left: 2%;
+    right: 2%;
+    border-radius: 25px;
+}
+
+#battleMessagesContainer > button {
+    display: none;
+    margin: 25px;
+    font-size: 24px;
 }

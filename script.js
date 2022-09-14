@@ -3,7 +3,12 @@
 //AUDIO FILE VARIABLES
 const simpleClick = new Audio('Audio/simpleClick.wav')
 const startMusic = new Audio('Audio/aftermath.mp3')
+startMusic.loop = true
 const cutsceneMusic = new Audio('Audio/anxiety.mp3')
+cutsceneMusic.loop = true
+const battleMusic = new Audio('Audio/stopWar.mp3')
+battleMusic.volume = 0.25
+battleMusic.loop = true
 
 //QUERY SELECTOR ALL VARIABLES
 const allButtons = document.querySelectorAll('button')
@@ -40,6 +45,7 @@ let playerCanChangeStats = true
 let currentScreen = null
 let nextScreen = startScreen
 let isPlayerLevelingUp = false
+let activeCutscene = null
 
 //
 //
@@ -80,8 +86,11 @@ class Gladiator {
 }
 
 class Cutscene {
-    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText) {
+    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic, postCutsceneMusicInterval) {
         this.cutsceneText = [firstElText, secondElText, thirdElText, fourthElText, buttonText]
+        this.postCutsceneScreen = postCutsceneScreen
+        this.postCutsceneMusic = postCutsceneMusic
+        this.postCutsceneMusicInterval = postCutsceneMusicInterval
     }
 
     fillCutsceneText = () => {
@@ -95,10 +104,13 @@ const playerGladiator = new Gladiator()
 const enemyGladiator = new Gladiator()
 const firstCutscene = new Cutscene(
     firstElText = 'Your heart pounds in your chest as you approach the gate to the arena grounds. You hear the murmurs of the barely interested crowd.',
-    secondElText = 'Your hand firmly grips a rusty, pathetic excuse for a weapon, hardly worthy of one who would call themselves a gladiator.',
-    thirdElText = 'However, this is an opportunity that will likely never present itself again. This is your chance to make a name for yourself; the start of your story.',
-    fourthElText = 'Rising, the gate groans and scrapes and squeals, and the sudden rush of anticipation from the crowd washes over you. There is only one path in front of you now.',
-    buttonText = `IT'S TIME TO FIGHT.`
+    secondElText = 'Your sweaty palm firmly grips a rusty, pathetic excuse for a weapon, hardly worthy of one who would call themselves a gladiator...',
+    thirdElText = '...but however insignificant this battle may be to the spectators, this is your chance to begin making a name for yourself; the start of your story.',
+    fourthElText = 'Rising, the gate groans and scrapes and squeals, and the rush of light from the arena sands washes over you. There is only one path in front of you now.',
+    buttonText = `IT'S TIME TO FIGHT.`,
+    postCutsceneScreen = battleScreen,
+    postCutsceneMusic = battleMusic,
+    postCutsceneMusicInterval = 75000
 )
 
 //
@@ -122,13 +134,13 @@ const delay = (time) => {
 //Got this one from stackoverflow and modified it: https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
 const unfade = (element, fadeSpeed) => {
     let op = 0.1;  // initial opacity
-    if(element.tagName === 'DIV') {
+    if (element.tagName === 'DIV') {
         element.style.display = 'flex'
     } else {
         element.style.display = 'block'
     }
     let timer = setInterval(function () {
-        if (op >= 1){
+        if (op >= 1) {
             clearInterval(timer)
         }
         element.style.opacity = op
@@ -149,8 +161,13 @@ const unfade = (element, fadeSpeed) => {
 // }
 
 const playSound = (sound) => {
-    if(sound==simpleClick) {sound.currentTime = 0}
+    if (sound === simpleClick) {sound.currentTime = 0}
     sound.play()
+}
+
+const pauseSound = (sound) => {
+    sound.currentTime = 0
+    sound.pause()
 }
 
 const renderStats = () => {
@@ -179,10 +196,10 @@ const displayGenericModal = (modalText) => {
 }
 
 //Promise chains make my brain hurt
-const renderCutscene = (cutscene, postCutsceneScreen) => {
-    cutsceneMusic.play()
+const renderCutscene = (cutscene) => {
+    activeCutscene = cutscene
+    playSound(cutsceneMusic)
     cutscene.fillCutsceneText()
-    nextScreen = postCutsceneScreen
     let promise = Promise.resolve()
     for (const element of cutsceneElements) {
         promise = promise
@@ -192,6 +209,10 @@ const renderCutscene = (cutscene, postCutsceneScreen) => {
                 return delay(2000)
             })
     }
+}
+
+const startBattle = () => {
+    playSound(battleMusic)
 }
 
 //
@@ -210,9 +231,7 @@ allButtons.forEach(button => {
 
 loadBtn.addEventListener('click', (event) => {
     loadBtn.style.display = 'none'
-    musicRepeatInterval = setInterval(() =>{
-        playSound(startMusic)
-    ,180000})
+    playSound(startMusic)
     nextScreen = startScreen
     toggleScreen('fadeIn')
 })
@@ -274,11 +293,10 @@ allStatIncrementers.forEach(button => {
 characterStatConfirmBtn.addEventListener('click', (event) => {
     if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === false) {
         playerCanChangeStats = false
-        startMusic.pause()
-        clearInterval(musicRepeatInterval)
+        pauseSound(startMusic)
         nextScreen = cutsceneContainer
         toggleScreen('none')
-        renderCutscene(firstCutscene, battleScreen)
+        renderCutscene(firstCutscene)
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
@@ -294,7 +312,8 @@ closeGenericModalBtn.addEventListener('click', (event) => {
 })
 
 endCutsceneBtn.addEventListener('click', (event) => {
+    pauseSound(cutsceneMusic)
+    playSound(activeCutscene.postCutsceneMusic)
+    nextScreen = activeCutscene.postCutsceneScreen
     toggleScreen('none')
-    cutsceneMusic.currentTime = 0
-    cutsceneMusic.pause()
 })

@@ -7,6 +7,7 @@
     <title>Blades and Brigandines</title>
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
+    <link rel="icon" href="Images/crossed swords.png">
 </head>
 <body>
     <button id="loadButton">CLICK HERE TO BEGIN</button>
@@ -43,10 +44,10 @@
                 Combat is turn-based. Each gladiator has the following actions available to them: <br>
                 <b><u>Attacks (light, medium, heavy)</u></b> - The gladiator attacks with their weapon. The heavier the attack, the more damage it will deal, the less
                 accuracy it will have, the higher the chance to land a critical strike, and the higher the Energy consumption <br>
-                <b><u>Rest</u></b> - The gladiator uses their turn to rest and regain 50% of their Energy pool <br>
                 <b><u>Taunt</u></b> - The gladiator uses their turn to try and rile up their opponent. If successful, the target receives a random debuff, or they miss their turn as
                 the taunter goads them into attacking before being countered for a free light hit <br>
                 <b><u>Win the Crowd</u></b> - The gladiator uses their turn to excite the crowd. The higher the mood of the crowd, the more gold that will be rewarded for the fight. <br>
+                <b><u>Rest</u></b> - The gladiator uses their turn to rest and regain 50% of their Energy pool <br>
             </p><br>
             <h2><b>The Arena</b></h2>
             <p>
@@ -123,7 +124,52 @@
         <button class="cutsceneEl" id="endCutscene">CONTINUE...</button>
     </div>
     <div id="battleScreen">
-        
+        <div id="playerBattle">
+            <div id="playerInfo">
+                <h1><span class="playerNameSpan">Nameless One</span></h1>
+                <div class="battleStatDisplay">
+                    <h2>HEALTH:</h2>
+                    <h2 id="playerHealth">20</h2>
+                </div>
+                <div class="battleStatDisplay">
+                    <h2>ENERGY:</h2>
+                    <h2 id="playerEnergy">40</h2>
+                </div>
+                <div class="battleStatDisplay">
+                    <h2>ARMOR:</h2>
+                    <h2 id="playerArmor">0</h2>
+                </div>
+            </div>
+            <div id="playerActionsContainer">
+                <div id="playerAttacks">
+                    <button id="light">LIGHT ATTACK</button><br>
+                    <button id="medium">MEDIUM ATTACK</button><br>
+                    <button id="heavy">HEAVY ATTACK</button>
+                </div>
+                <button id="taunt">TAUNT</button>
+                <button id="winTheCrowd">WIN THE CROWD</button>
+                <button id="rest">REST</button>
+            </div>
+        </div>
+        <div id="enemyBattle">
+            <h1><span id="enemyName">Enemy</span></h1>
+            <div class="battleStatDisplay">
+                <h2>HEALTH:</h2>
+                <h2 id="enemyHealth">20</h2>
+            </div>
+            <div class="battleStatDisplay">
+                <h2>ENERGY:</h2>
+                <h2 id="enemyEnergy">40</h2>
+            </div>
+            <div class="battleStatDisplay">
+                <h2>ARMOR:</h2>
+                <h2 id="enemyArmor">0</h2>
+            </div>
+        </div>
+        <div id="battleMessagesContainer">
+            <h1 id="battleMessages">Test</h1>
+            <button id="leaveBattle">CONTINUE...</button>
+        </div>
     </div>
 </body>
 </html>
