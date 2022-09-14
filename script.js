@@ -111,10 +111,7 @@ class Weapon extends Equipment {
         super(itemName, description, price, purchased, equipped)
         this.minDamage = minDamage
         this.maxDamage = maxDamage
-    }
-
-    equipWeapon() {
-        //set player's equipped weapon to this one and equipped = true, unequip the old one and equipped = false
+        this.damageRange = maxDamage - minDamage
     }
 }
 
@@ -131,10 +128,6 @@ class Armor extends Equipment {
         super(itemName, description, price, purchased, equipped)
         this.armorBonus = armorBonus
     }
-
-    equipArmor() {
-        //set player's equipped armor to this one and equipped = true, unequip the old one and equipped = false
-    }
 }
 
 const allArmor = [
@@ -146,7 +139,9 @@ const allArmor = [
 ]
 
 class Gladiator {
-    constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50, armorRemaining=0, maxArmor=0, statPoints=5, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
+    constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50,
+        armorRemaining=0, maxArmor=0, statPoints=5, strength=0, attack=0, defense=0, vitality=0, 
+        stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
         this.gladiatorName = gladiatorName
         this.level = level
         this.health = health
@@ -201,14 +196,37 @@ class Gladiator {
         //not finished
     }
 
+    changeEquipment(itemToEquip) {
+        if (itemToEquip.constructor.name === 'Weapon') {
+            this.equippedItems[0].equipped = false
+            this.equippedItems[0] = itemToEquip
+        } else if (item.constructor.name === 'Armor') {
+            this.equippedItems[1].equipped = false
+            this.equippedItems[1] = itemToEquip
+        }
+        itemToEquip.equipped = true
+    }
+
     makeAttack(target, attackType) {
         if (this.checkEnergy() === false) {return}
         this.energy -= this.calcEnergy(attackType)
         this.calcCrowd(attackType)
         let hitChance = this.calcAccuracy(attackType, target.defense)
         if (Math.random() <= hitChance) {
-            let damage = this.calcDamage(attackType) * this.checkIfCritical(attackType)
-            //not finished
+            let critMultiplier = this.checkIfCritical(attackType)
+            let totalDamage = this.calcDamage(attackType) * critMultiplier
+            if (critMultiplier === 2) {
+                target.health -= totalDamage 
+            } else {
+                if (totalDamage > target.armorRemaining) {
+                    totalDamage -= target.armorRemaining
+                    target.armorRemaining = 0
+                    target.health -= totalDamage
+                } else {
+                    target.armorRemaining -= totalDamage
+                }
+            }
+            target.checkHealth()
         }
         renderStats()
     }
@@ -227,7 +245,7 @@ class Gladiator {
         } else if (attackType === 'medium') {
             return 25 + 5 * this.strength
         } else {
-            return 40 + 8 * this.strength
+            return 40 + 10 * this.strength
         }
     }
 
@@ -241,35 +259,45 @@ class Gladiator {
             statDelta = this.charisma - targetStat
             calcAccuracy = 0.5 + statDelta * 0.05
             if (calcAccuracy < 0.2) {calcAccuracy = 0.2}
+            if (calcAccuracy > 0.9) {calcAccuracy = 0.9}
         }
 
         if (action === 'light') {
             calcAccuracy = 0.75 + statDelta * 0.1
             if (calcAccuracy < 0.33) {calcAccuracy = 0.33}
-            
+            if (calcAccuracy > 0.95) {calcAccuracy = 0.95}
         } else if (action === 'medium') {
             calcAccuracy = 0.5 + statDelta * 0.05
             if (calcAccuracy < 0.2) {calcAccuracy = 0.2}
+            if (calcAccuracy > 0.80) {calcAccuracy = 0.80}
         } else if (action === 'heavy') {
             calcAccuracy = 0.25 + statDelta * 0.025
             if (calcAccuracy < 0.1) {calcAccuracy = 0.1}
+            if (calcAccuracy > 0.5) {calcAccuracy = 0.5}
         }
         return calcAccuracy
     }
 
     checkIfCritical(attackType) {
         if (attackType === 'light') {
-            if (Math.random() < 0.05) {return 2}
+            if (Math.random() <= 0.05) {return 2}
         } else if (attackType === 'medium') {
-            if (Math.random() < 0.10) {return 2}
+            if (Math.random() <= 0.10) {return 2}
         } else if (attackType === 'heavy') {
-            if (Math.random() < 0.20) {return 2}
+            if (Math.random() <= 0.20) {return 2}
         }
         return 1
     }
 
     calcDamage(attackType) {
-
+        let weaponDamage = Math.round(this.weapon.minDamage + Math.random() * this.weapon.damageRange)
+        if (attackType === 'light') {
+            return weaponDamage + this.strength * 2
+        } else if (attackType === 'medium') {
+            return weaponDamage * 1.5 + this.strength * 5
+        } else if (attackType === 'heavy') {
+            return weaponDamage * 2 + this.strength * 10
+        }
     }
 
     calcCrowd(action) {
@@ -296,7 +324,7 @@ class Gladiator {
     }
 
     taunt(target) {
-        
+        this.changeEquipment(broadsword)
     }
 
     winTheCrowd() {
@@ -312,7 +340,9 @@ class Gladiator {
             return
         }
         this.energy += this.maxEnergy * 0.5
+        this.health += this.maxHealth * 0.05
         if (this.energy > this.maxEnergy) {this.energy = this.maxEnergy}
+        if (this.health > this.maxHealth) {this.health = this.maxHealth}
         this.calcCrowd('rest')
         renderStats()
     }
@@ -347,7 +377,8 @@ const delay = (time) => {
     })
 }
 
-//Got this one from stackoverflow and modified it: https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
+//Got this one from stackoverflow and modified it:
+//https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
 const unfade = (element, fadeSpeed) => {
     let op = 0.1;  // initial opacity
     if (element.tagName === 'DIV') {
@@ -434,6 +465,7 @@ function startBattle() {
     playSound(battleMusic)
     renderStats()
     crowdBar.style.width = `${crowdBarPercentage * 100}%`
+    battleMessages.innerText = `The crowd looks on with curiosity as you engage your opponent.`
 }
 
 //

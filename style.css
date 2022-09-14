@@ -239,14 +239,19 @@ th, td {
     text-align: center;
 }
 
+#crowdContainer {
+    background-image: var(--textbox-and-cutscene-background-image);
+    height: 5%;
+    width: var(100% - 4px);
+    border: solid white 2px;
+    border-radius: 25px;
+}
+
 #crowd {
     background-color: var(--text-and-border);
     color: white;
-    height: 5%;
     width: 10%;
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
-    border: solid white 2px;
+    border-radius: 25px;
 }
 
 #playerBattle {
