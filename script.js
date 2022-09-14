@@ -51,6 +51,7 @@ let nextScreen = startScreen
 let isPlayerLevelingUp = false
 let activeCutscene = null
 let crowdBarPercentage = 0.1
+let combatRound = 1
 
 //
 //
@@ -106,6 +107,21 @@ class Equipment {
     }
 }
 
+class Debuff {
+    constructor(debuffName, debuffMultiplier, expiration) {
+        this.debuffName = debuffName
+        this.debuffMultiplier = debuffMultiplier
+        this.expiration = expiration
+    }
+}
+
+const allDebuffs = [
+    enraged = new Debuff('ENRAGED', 0.5, 2),
+    distracted = new Debuff('DISTRACTED', 1.5, 3),
+    exasperated = new Debuff('EXASPERATED', 0.5, 0),
+    countered = new Debuff('COUNTERED', null, 0)
+]
+
 class Weapon extends Equipment {
     constructor(itemName, description, price, purchased, equipped, minDamage, maxDamage) {
         super(itemName, description, price, purchased, equipped)
@@ -140,7 +156,7 @@ const allArmor = [
 
 class Gladiator {
     constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50,
-        armorRemaining=0, maxArmor=0, statPoints=5, strength=0, attack=0, defense=0, vitality=0, 
+        armorRemaining=0, maxArmor=0, debuff='NONE', debuffClear=null, statPoints=5, strength=0, attack=0, defense=0, vitality=0, 
         stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
         this.gladiatorName = gladiatorName
         this.level = level
@@ -150,6 +166,8 @@ class Gladiator {
         this.maxEnergy = maxEnergy
         this.armorRemaining = armorRemaining
         this.maxArmor = maxArmor
+        this.debuff = debuff
+        this.debuffClear = debuffClear
         this.statPoints = statPoints
         this.strength = strength
         this.attack = attack
@@ -208,26 +226,25 @@ class Gladiator {
     }
 
     makeAttack(target, attackType) {
-        if (this.checkEnergy() === false) {return}
-        this.energy -= this.calcEnergy(attackType)
-        this.calcCrowd(attackType)
-        let hitChance = this.calcAccuracy(attackType, target.defense)
-        if (Math.random() <= hitChance) {
-            let critMultiplier = this.checkIfCritical(attackType)
-            let totalDamage = this.calcDamage(attackType) * critMultiplier
-            if (critMultiplier === 2) {
-                target.health -= totalDamage 
-            } else {
-                if (totalDamage > target.armorRemaining) {
-                    totalDamage -= target.armorRemaining
-                    target.armorRemaining = 0
-                    target.health -= totalDamage
+        if (target.debuff === countered) {
+            let totalDamage = this.calcDamage(attackType)
+            this.checkArmor(totalDamage, target)
+        } else {
+            if (this.checkEnergy() === false) {return}
+            this.energy -= this.calcEnergy(attackType)
+            this.calcCrowd(attackType)
+            let hitChance = this.calcAccuracy(attackType, target.defense, target)
+            if (Math.random() <= hitChance) {
+                let critMultiplier = this.checkIfCritical(attackType)
+                let totalDamage = this.calcDamage(attackType) * critMultiplier
+                if (critMultiplier === 2) {
+                    target.health -= totalDamage 
                 } else {
-                    target.armorRemaining -= totalDamage
+                    this.checkArmor(totalDamage, target)
                 }
             }
-            target.checkHealth()
         }
+        target.checkHealth()
         renderStats()
     }
 
@@ -249,7 +266,7 @@ class Gladiator {
         }
     }
 
-    calcAccuracy(action, targetStat) {
+    calcAccuracy(action, targetStat, target) {
         let statDelta = null
         let calcAccuracy = null
 
@@ -275,7 +292,12 @@ class Gladiator {
             if (calcAccuracy < 0.1) {calcAccuracy = 0.1}
             if (calcAccuracy > 0.5) {calcAccuracy = 0.5}
         }
-        return calcAccuracy
+
+        let debuffMod = 1
+        if (this.debuff === enraged) {debuffMod = enraged.debuffMultiplier}
+        if (target.debuff === distracted) {debuffMod = distracted.debuffMultiplier}
+
+        return calcAccuracy * debuffMod
     }
 
     checkIfCritical(attackType) {
@@ -297,6 +319,16 @@ class Gladiator {
             return weaponDamage * 1.5 + this.strength * 5
         } else if (attackType === 'heavy') {
             return weaponDamage * 2 + this.strength * 10
+        }
+    }
+
+    checkArmor(totalDamage, target) {
+        if (totalDamage > target.armorRemaining) {
+            totalDamage -= target.armorRemaining
+            target.armorRemaining = 0
+            target.health -= totalDamage
+        } else {
+            target.armorRemaining -= totalDamage
         }
     }
 
@@ -324,7 +356,23 @@ class Gladiator {
     }
 
     taunt(target) {
-        this.changeEquipment(broadsword)
+        let successChance = this.calcAccuracy('taunt', target.charisma, target)
+        if (Math.random() < successChance) {
+            let rng = Math.random()
+            if (rng >= 0.9) {
+                target.debuff = countered
+                this.makeAttack(target, 'light')
+            } else if (rng >= 0.6) {
+                target.debuff = exasperated
+                target.energy -= target.maxEnergy * exasperated.debuffMultiplier
+            } else if (rng >= 0.3) {
+                target.debuff = distracted
+            } else {
+                target.debuff = enraged
+            }
+            target.debuffClear = combatRound + target.debuff.expiration
+        }
+        renderStats()
     }
 
     winTheCrowd() {
@@ -420,11 +468,22 @@ function pauseSound(sound) {
 function renderStats() {
     statLists.forEach(span => {
         stat = span.getAttribute('stat')
-        span.textContent = playerGladiator[stat]
+        if (stat != 'debuff') {
+            span.textContent = playerGladiator[stat]
+        } else {
+            span.textContent = playerGladiator.debuff.debuffName
+            if (span.textContent === '') {span.textContent = 'NONE'}
+        }
+        
     })
     enemyStats.forEach(span => {
         stat = span.getAttribute('stat')
-        span.textContent = enemyGladiator[stat]
+        if (stat != 'debuff') {
+            span.textContent = enemyGladiator[stat]
+        } else {
+            span.textContent = enemyGladiator.debuff.debuffName
+            if (span.textContent === '') {span.textContent = 'NONE'}
+        }
     })
 }
 

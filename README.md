@@ -25,7 +25,7 @@
             Charisma - determines extra gold earned from fights, shop discounts, and taunt/win the crowd effectiveness. Base gold earned is 80% of potential value, and shop prices are 120% their normal values. Each level is 5% additional gold/shop discount. Level 1 taunts have a 50% chance to succeed and each level of charisma increases chance to succeed by 5%, directly contested by opponent's charisma which subtracts 5% from taunt success chance. Each level of charisma makes win the crowd 25% more effective.
                 Taunt: This action, if successful, inflicts a random debuff on the enemy
                     Debuffs:
-                        30% chance - Enraged - Decreases chance of opponent's next attack to hit by 50%, but if successful, the attack hits 2x harder. Expires at the end of opponent's next turn
+                        30% chance - Enraged - Decreases chance of opponent's next attack to hit by 50%. Expires at the end of opponent's next turn
                         30% chance - Distracted - Increases your chance to hit your opponent by 50% on your next attack. Expires at the end of your next turn
                         30% chance - Exasperated - Reduces opponent's stamina by 50% of current total
                         10% chance - Countered - Skip opponent's next turn and hit them with a free light attack
