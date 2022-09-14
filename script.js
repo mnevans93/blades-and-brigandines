@@ -17,6 +17,7 @@ const allStatDecrementers = document.querySelectorAll('.statDecrementers')
 const allStatIncrementers = document.querySelectorAll('.statIncrementers')
 const statLists = document.querySelectorAll('.statList')
 const cutsceneElements = document.querySelectorAll('.cutsceneEl')
+const allActionBtns = document.querySelectorAll('.action')
 
 //GET ELEMENT BY ID VARIABLES
 const loadBtn = document.getElementById('loadButton')
@@ -38,6 +39,7 @@ const closeGenericModalBtn = document.getElementById('closeGenericModal')
 const cutsceneContainer = document.getElementById('cutscene')
 const endCutsceneBtn = document.getElementById('endCutscene')
 const battleScreen = document.getElementById('battleScreen')
+const battleMessages = document.getElementById('battleMessages')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
@@ -54,66 +56,6 @@ let activeCutscene = null
 //
 //
 //
-
-class Gladiator {
-    constructor(name=0, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, statPoints=5, gold=0) {
-        this.name = name
-        this.strength = strength
-        this.attack = attack
-        this.defense = defense
-        this.vitality = vitality
-        this.stamina = stamina
-        this.charisma = charisma
-        this.statPoints = statPoints
-        this.gold = gold
-    }
-
-    equippedItems = [
-        this.weapon = rustyBlade,
-        this.armor = plainClothing
-    ]
-
-    inventoryItems = []
-
-    incrementStat(stat) {
-        if(this.statPoints > 0 && playerCanChangeStats === true) {
-            this[stat] += 1
-            this.statPoints -= 1
-            renderStats()
-        }
-    }
-
-    decrementStat(stat) {
-        if(this[stat] > 0  && playerCanChangeStats === true) {
-            this[stat] -= 1
-            this.statPoints += 1
-            renderStats()
-        }
-    }
-
-    makeAttack(target, attackType) {
-        
-    }
-
-    taunt(target) {
-
-    }
-
-    winTheCrowd() {
-
-    }
-
-    rest() {
-
-    }
-
-    generateBattleMessage(gladiatorType, actionType, succeeded) {
-
-    }
-}
-
-const playerGladiator = new Gladiator()
-const enemyGladiator = new Gladiator()
 
 class Cutscene {
     constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic, postCutsceneMusicInterval) {
@@ -196,8 +138,73 @@ const allArmor = [
     hideArmor = new Armor('Hide Armor', `Stitched together hides that only cover major vital points. Better than nothing.`, 250, false, false, 25),
     paddedArmor = new Armor('Padded Armor', `Covers just about everything important, but it's not terribly sturdy.`, 1000, false, false, 50),
     leatherArmor = new Armor('Leather Armor', `Well-fitted and fairly durable. This might just keep you alive.`, 2500, false, false, 100),
-    chainMail = new Armor('Chainmail', `This looks very well-made. Very sturdy - should turn quite a few blades.`, 5000, false, false, 200)
+    brigandine = new Armor('Brigandine', `This looks very well-made. Very sturdy, too. It should turn quite a few blades.`, 5000, false, false, 200)
 ]
+
+class Gladiator {
+    constructor(name=0, level=1, statPoints=5, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, gold=0, defeatedOpponents=0) {
+        this.name = name
+        this.level = level
+        this.statPoints = statPoints
+        this.strength = strength
+        this.attack = attack
+        this.defense = defense
+        this.vitality = vitality
+        this.stamina = stamina
+        this.charisma = charisma
+        this.experience = experience
+        this.gold = gold
+        this.defeatedOpponents = defeatedOpponents
+    }
+
+    equippedItems = [
+        this.weapon = rustyBlade,
+        this.armor = plainClothing
+    ]
+
+    incrementStat(stat) {
+        if(this.statPoints > 0 && playerCanChangeStats === true) {
+            this[stat] += 1
+            this.statPoints -= 1
+            renderStats()
+        }
+    }
+
+    decrementStat(stat) {
+        if(this[stat] > 0  && playerCanChangeStats === true) {
+            this[stat] -= 1
+            this.statPoints += 1
+            renderStats()
+        }
+    }
+
+    makeAttack(target, attackType) {
+        
+    }
+
+    taunt(target) {
+        
+    }
+
+    winTheCrowd() {
+        
+    }
+
+    rest() {
+        
+    }
+
+    generateBattleMessage(actionType, succeeded) {
+
+    }
+
+    enemyAction() {
+
+    }
+}
+
+const playerGladiator = new Gladiator()
+const enemyGladiator = new Gladiator()
 
 //
 //
@@ -402,4 +409,17 @@ endCutsceneBtn.addEventListener('click', (event) => {
     playSound(activeCutscene.postCutsceneMusic)
     nextScreen = activeCutscene.postCutsceneScreen
     toggleScreen('none')
+})
+
+allActionBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        let buttonID = button.getAttribute('id')
+        if (buttonID === 'light' || buttonID === 'medium' || buttonID === 'heavy') {
+            playerGladiator.makeAttack(enemyGladiator, buttonID)
+        } else if (buttonID === 'taunt') {
+            playerGladiator.taunt(enemyGladiator)
+        } else {
+            playerGladiator[buttonID]()
+        }
+    })
 })

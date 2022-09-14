@@ -69,7 +69,7 @@
             Rest: This action restores 50% of the gladiator's stamina. Not usable if stamina is full. Only available action if gladiator has <= 0 stamina on their turn
             Taunt: This action, if successful, inflicts a random debuff on the enemy
                 Debuffs:
-                    30% chance - Enraged - Decreases chance of opponent's next attack to hit by 50%, but if successful, the attack hits 2x harder. Expires at the end of opponent's next turn
+                    30% chance - Enraged - Decreases chance of opponent's next attack to hit by 50%. Expires at the end of opponent's next turn
                     30% chance - Distracted - Increases your chance to hit your opponent by 50% on your next attack. Expires at the end of your next turn
                     30% chance - Exasperated - Reduces opponent's stamina by 50% of current total
                     10% chance - Countered - Skip opponent's next turn and hit them with a free light attack
