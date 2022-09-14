@@ -56,7 +56,7 @@ let activeCutscene = null
 //
 
 class Gladiator {
-    constructor(name=0, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, statPoints=5) {
+    constructor(name=0, strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, statPoints=5, gold=0) {
         this.name = name
         this.strength = strength
         this.attack = attack
@@ -65,9 +65,17 @@ class Gladiator {
         this.stamina = stamina
         this.charisma = charisma
         this.statPoints = statPoints
+        this.gold = gold
     }
 
-    incrementStat = (stat) => {
+    equippedItems = [
+        this.weapon = rustyBlade,
+        this.armor = plainClothing
+    ]
+
+    inventoryItems = []
+
+    incrementStat(stat) {
         if(this.statPoints > 0 && playerCanChangeStats === true) {
             this[stat] += 1
             this.statPoints -= 1
@@ -75,7 +83,7 @@ class Gladiator {
         }
     }
 
-    decrementStat = (stat) => {
+    decrementStat(stat) {
         if(this[stat] > 0  && playerCanChangeStats === true) {
             this[stat] -= 1
             this.statPoints += 1
@@ -83,7 +91,29 @@ class Gladiator {
         }
     }
 
+    makeAttack(target, attackType) {
+        
+    }
+
+    taunt(target) {
+
+    }
+
+    winTheCrowd() {
+
+    }
+
+    rest() {
+
+    }
+
+    generateBattleMessage(gladiatorType, actionType, succeeded) {
+
+    }
 }
+
+const playerGladiator = new Gladiator()
+const enemyGladiator = new Gladiator()
 
 class Cutscene {
     constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic, postCutsceneMusicInterval) {
@@ -100,18 +130,74 @@ class Cutscene {
     }
 }
 
-const playerGladiator = new Gladiator()
-const enemyGladiator = new Gladiator()
-const firstCutscene = new Cutscene(
-    firstElText = 'Your heart pounds in your chest as you approach the gate to the arena grounds. You hear the murmurs of the barely interested crowd.',
-    secondElText = 'Your sweaty palm firmly grips a rusty, pathetic excuse for a weapon, hardly worthy of one who would call themselves a gladiator...',
-    thirdElText = '...but however insignificant this battle may be to the spectators, this is your chance to begin making a name for yourself; the start of your story.',
-    fourthElText = 'Rising, the gate groans and scrapes and squeals, and the rush of light from the arena sands washes over you. There is only one path in front of you now.',
-    buttonText = `IT'S TIME TO FIGHT.`,
-    postCutsceneScreen = battleScreen,
-    postCutsceneMusic = battleMusic,
-    postCutsceneMusicInterval = 75000
-)
+const cutscenes = [
+    introCutscene = new Cutscene(
+        firstElText = 'Your heart pounds in your chest as you approach the gate to the arena grounds. You hear the murmurs of the barely interested crowd.',
+        secondElText = 'Your sweaty palm firmly grips a rusty, pathetic excuse for a weapon, hardly worthy of one who would call themselves a gladiator...',
+        thirdElText = '...but however insignificant this battle may be to the spectators, this is your chance to begin making a name for yourself; the start of your story.',
+        fourthElText = 'Rising, the gate groans and scrapes and squeals, and the rush of light from the arena sands washes over you. There is only one path in front of you now.',
+        buttonText = `IT'S TIME TO FIGHT.`,
+        postCutsceneScreen = battleScreen,
+        postCutsceneMusic = battleMusic,
+        postCutsceneMusicInterval = 75000
+    )
+]
+
+class Equipment {
+    constructor(itemName, description, price, purchased, equipped) {
+        this.itemName = itemName
+        this.description = description
+        this.price = price
+        this.purchased = purchased
+        this.equipped = equipped
+    }
+
+    buyEquipment() {
+        //check if player has enough gold to add item to their inventory
+            //call generic modal if they do not have enough gold and return
+        //else subtract price from player's gold, set purchased to true so it can show 
+        //give player option to equip after purchasing or prompt to equip in inventory
+    }
+}
+
+class Weapon extends Equipment {
+    constructor(itemName, description, price, purchased, equipped, minDamage, maxDamage) {
+        super(itemName, description, price, purchased, equipped)
+        this.minDamage = minDamage
+        this.maxDamage = maxDamage
+    }
+
+    equipWeapon() {
+        //set player's equipped weapon to this one and equipped = true, unequip the old one and equipped = false
+    }
+}
+
+const allWeapons = [
+    rustyBlade = new Weapon('Rusty Blade', `Not much of a weapon, but it'll have to do for now.`, 0, true, true, 0, 5),
+    serratedKnife = new Weapon('Serrated Knife', `Sharper than what you started with, but... isn't this just a steak knife?`, 100, false, false, 5, 10),
+    shortsword = new Weapon('Shortsword', `Finally, a real weapon.`, 250, false, false, 10, 20),
+    longsword = new Weapon('Longsword', `This blade has some real heft to it. This will do nicely...`, 1000, false, false, 20, 35),
+    broadsword = new Weapon('Broadsword', `Deadly sharp, easy to handle. Your enemies won't know what cut them.`, 2500, false, false, 35, 50)
+] 
+
+class Armor extends Equipment {
+    constructor(itemName, description, price, purchased, equipped, armorBonus) {
+        super(itemName, description, price, purchased, equipped)
+        this.armorBonus = armorBonus
+    }
+
+    equipArmor() {
+        //set player's equipped armor to this one and equipped = true, unequip the old one and equipped = false
+    }
+}
+
+const allArmor = [
+    plainClothing = new Armor('Plain Clothing', `Doesn't protect you at all. It's pretty cut up already, too...`, 0, true, true, 0),
+    hideArmor = new Armor('Hide Armor', `Stitched together hides that only cover major vital points. Better than nothing.`, 250, false, false, 25),
+    paddedArmor = new Armor('Padded Armor', `Covers just about everything important, but it's not terribly sturdy.`, 1000, false, false, 50),
+    leatherArmor = new Armor('Leather Armor', `Well-fitted and fairly durable. This might just keep you alive.`, 2500, false, false, 100),
+    chainMail = new Armor('Chainmail', `This looks very well-made. Very sturdy - should turn quite a few blades.`, 5000, false, false, 200)
+]
 
 //
 //
@@ -296,7 +382,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         pauseSound(startMusic)
         nextScreen = cutsceneContainer
         toggleScreen('none')
-        renderCutscene(firstCutscene)
+        renderCutscene(introCutscene)
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
