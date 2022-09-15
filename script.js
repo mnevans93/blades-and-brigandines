@@ -36,12 +36,14 @@ const characterStatBackBtn = document.getElementById('leaveStats')
 const statAdjustCol = document.getElementById('adjustColumn')
 const genericModal = document.getElementById('genericModal')
 const genericModalTextEl = document.getElementById('genericModalText')
-const closeGenericModalBtn = document.getElementById('closeGenericModal')
+// const closeGenericModalBtn = document.getElementById('closeGenericModal')
 const cutsceneContainer = document.getElementById('cutscene')
 const endCutsceneBtn = document.getElementById('endCutscene')
 const battleScreen = document.getElementById('battleScreen')
 const battleMessages = document.getElementById('battleMessages')
+const battleRoundEl = document.getElementById('battleRound')
 const crowdBar = document.getElementById('crowd')
+const playerActions = document.getElementById('playerActionsContainer')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
@@ -51,7 +53,7 @@ let nextScreen = startScreen
 let isPlayerLevelingUp = false
 let activeCutscene = null
 let crowdBarPercentage = 0.1
-let combatRound = 1
+let battleRound = 1
 let enemyTurn = false
 
 //
@@ -75,6 +77,22 @@ class Cutscene {
             cutsceneElements[index].textContent = this.cutsceneText[index]
         }
     }
+
+    renderCutscene() {
+        activeCutscene = this
+        playSound(cutsceneMusic)
+        this.fillCutsceneText()
+        let promise = Promise.resolve()
+        for (const element of cutsceneElements) {
+            promise = promise
+                .then(() => delay(3000))
+                .then(() => {
+                    unfade(element, 50)
+                    return delay(2000)
+                })
+        }
+    }
+
 }
 
 const cutscenes = [
@@ -384,7 +402,7 @@ class Gladiator {
             } else {
                 target.debuff = enraged
             }
-            target.debuffClear = combatRound + target.debuff.expiration
+            target.debuffClear = battleRound + target.debuff.expiration
         }
         renderStats()
         return false
@@ -412,10 +430,15 @@ class Gladiator {
         return false
     }
 
-    generateBattleMessage(messageType, succeeded) {
-        if (messageType === 'victory') {
-
+    debuffHandler() {
+        if (this.debuffClear >= battleRound) {
+            this.debuff = 'NONE'
+            this.debuffClear = null
         }
+    }
+
+    generateBattleMessage(messageText) {
+
     }
 
     enemyAction() {
@@ -424,7 +447,7 @@ class Gladiator {
 }
 
 const playerGladiator = new Gladiator()
-const enemyGladiator = new Gladiator()
+const enemyGladiator = new Gladiator('New Blood')
 
 //
 //
@@ -524,35 +547,26 @@ function displayGenericModal(modalText) {
     genericModal.style.display = 'flex'
 }
 
-function renderCutscene(cutscene) {
-    activeCutscene = cutscene
-    playSound(cutsceneMusic)
-    cutscene.fillCutsceneText()
-    let promise = Promise.resolve()
-    for (const element of cutsceneElements) {
-        promise = promise
-            .then(() => delay(3000))
-            .then(() => {
-                unfade(element, 50)
-                return delay(2000)
-            })
-    }
-}
-
 function startBattle() {
     playSound(battleMusic)
     renderStats()
-    combatRound = 1
+    battleRound = 1
+    crowdBarPercentage = 0.1
     crowdBar.style.width = `${crowdBarPercentage * 100}%`
 }
 
 function progressBattle() {
     if (enemyGladiator.debuff != countered) {
+        playerActions.style.opacity = 0
         enemyTurn = true
         setTimeout(() => {
+            playerActions.style.opacity = 1
             enemyTurn = false
-        },4000)
+        },2000)
     }
+    battleRound += 1
+    playerGladiator.debuffHandler()
+    enemyGladiator.debuffHandler()
 }
 
 function endBattle(condition) {
@@ -640,7 +654,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         pauseSound(startMusic)
         nextScreen = cutsceneContainer
         toggleScreen('none')
-        renderCutscene(introCutscene)
+        introCutscene.renderCutscene()
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
     } else {displayGenericModal('You must allocate all stat points before proceeding.')}
@@ -652,7 +666,11 @@ characterStatBackBtn.addEventListener('click', (event) => {
     toggleScreen('none')
 })
 
-closeGenericModalBtn.addEventListener('click', (event) => {
+// closeGenericModalBtn.addEventListener('click', (event) => {
+//     genericModal.style.display = 'none'
+// })
+
+genericModal.addEventListener('click', (event) => {
     genericModal.style.display = 'none'
 })
 
@@ -676,10 +694,7 @@ allActionBtns.forEach(button => {
             } else {
                 playerTookNoAction = playerGladiator[buttonID]()
             }
-            console.log(playerTookNoAction)
             if (playerTookNoAction === false) {progressBattle()}
-        } else {
-            displayGenericModal(`It is your enemy's turn.`)
-        }
+        } 
     })
 })

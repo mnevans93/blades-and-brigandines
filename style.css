@@ -239,6 +239,14 @@ th, td {
     text-align: center;
 }
 
+#battleScreen {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: auto;
+    text-align: center;
+}
+
 #crowdContainer {
     background-image: var(--textbox-and-cutscene-background-image);
     height: 5%;
@@ -329,12 +337,4 @@ th, td {
     display: none;
     margin: 25px;
     font-size: 24px;
-}
-
-#battleScreen {
-    display: none;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: auto;
-    text-align: center;
 }
