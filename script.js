@@ -119,7 +119,7 @@ class Debuff {
 const allDebuffs = [
     enraged = new Debuff('ENRAGED', 0.5, 2),
     distracted = new Debuff('DISTRACTED', 1.5, 3),
-    exasperated = new Debuff('EXASPERATED', 0.5, 0),
+    exhausted = new Debuff('EXHAUSTED', 0.5, 0),
     countered = new Debuff('COUNTERED', null, 0)
 ]
 
@@ -394,8 +394,8 @@ class Gladiator {
                 target.debuff = countered
                 this.makeAttack(target, 'light')
             } else if (rng >= 0.6) {
-                target.debuff = exasperated
-                target.energy -= target.maxEnergy * exasperated.debuffMultiplier
+                target.debuff = exhausted
+                target.energy -= target.maxEnergy * exhausted.debuffMultiplier
             } else if (rng >= 0.3) {
                 target.debuff = distracted
             } else {
@@ -457,7 +457,7 @@ const enemyGladiator = new Gladiator('New Blood')
 //
 
 
-//Got this one from my software engineer friend and now my brain hurts, but I think I understand callback hell
+//Got this one from my software engineer friend who taught me about promises and promise chaining...
 const delay = (time) => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -559,10 +559,16 @@ function progressBattle() {
         playerActions.style.opacity = 0
         enemyTurn = true
         //enemy does their turn, need logic for this
-        setTimeout(() => {
-            playerActions.style.opacity = 1
-            enemyTurn = false
-        },2000)
+        if (playerGladiator.debuff != countered) {
+            setTimeout(() => {
+                playerActions.style.opacity = 1
+                enemyTurn = false
+            }, 2000)
+        } else {
+            playerGladiator.debuffHandler()
+            progressBattle()
+            return
+        }
     }
     battleRound += 1
     playerGladiator.debuffHandler()
