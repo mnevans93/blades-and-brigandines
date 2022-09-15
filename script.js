@@ -36,7 +36,6 @@ const characterStatBackBtn = document.getElementById('leaveStats')
 const statAdjustCol = document.getElementById('adjustColumn')
 const genericModal = document.getElementById('genericModal')
 const genericModalTextEl = document.getElementById('genericModalText')
-// const closeGenericModalBtn = document.getElementById('closeGenericModal')
 const cutsceneContainer = document.getElementById('cutscene')
 const endCutsceneBtn = document.getElementById('endCutscene')
 const battleScreen = document.getElementById('battleScreen')
@@ -559,6 +558,7 @@ function progressBattle() {
     if (enemyGladiator.debuff != countered) {
         playerActions.style.opacity = 0
         enemyTurn = true
+        //enemy does their turn, need logic for this
         setTimeout(() => {
             playerActions.style.opacity = 1
             enemyTurn = false
@@ -665,10 +665,6 @@ characterStatBackBtn.addEventListener('click', (event) => {
     nextScreen = startScreen
     toggleScreen('none')
 })
-
-// closeGenericModalBtn.addEventListener('click', (event) => {
-//     genericModal.style.display = 'none'
-// })
 
 genericModal.addEventListener('click', (event) => {
     genericModal.style.display = 'none'

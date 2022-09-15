@@ -1,186 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blades and Brigandines</title>
-    <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
-    <link rel="icon" href="Images/crossed swords.png">
-</head>
-<body>
-    <button id="loadButton">CLICK HERE TO BEGIN</button>
-    <div id="startScreen">
-        <h1>BLADES AND BRIGANDINES</h1>
-        <img src="Images/crossed swords.png" alt="Crossed black swords">
-        <h3>Welcome to Blades and Brigandines. In this roguelike game, you will step into the sandals of a gladiator fighting their way to fame and glory within the storied Arena.
-        As your foes fall before you, you will gain experience and grow ever stronger, and the spoils of your victories may be spent on new weapons and armor to enhance your combat prowess.
-        Many come to the Arena, but few leave with their lives. What does your fate have in store for you?
-        <br><br>
-        Type in your gladiator's name below and Enter the Arena to begin, or click How to Play for an explanation of basic game mechanics.
-        </h3>
-        <div id="startScreenInputs">
-            <input id="nameInput" type="text" value="Nameless One"> <br>
-            <button id="startGame">ENTER THE ARENA</button><button id="howToPlay">HOW TO PLAY</button>
-            <button id="assets">CREDITS</button>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Blades and Brigandines</title>
+        <link rel="stylesheet" href="style.css">
+        <script defer src="script.js"></script>
+        <link rel="icon" href="Images/crossed swords.png">
+    </head>
+    <body>
+        <button id="loadButton">CLICK HERE TO BEGIN</button>
+        <div id="startScreen">
+            <h1>BLADES AND BRIGANDINES</h1>
+            <img src="Images/crossed swords.png" alt="Crossed black swords">
+            <h3>Welcome to Blades and Brigandines. In this roguelike game, you will step into the sandals of a gladiator fighting their way to fame and glory within the storied Arena.
+            As your foes fall before you, you will gain experience and grow ever stronger, and the spoils of your victories may be spent on new weapons and armor to enhance your combat prowess.
+            Many come to the Arena, but few leave with their lives. What does your fate have in store for you?
+            <br><br>
+            Type in your gladiator's name below and Enter the Arena to begin, or click How to Play for an explanation of basic game mechanics.
+            </h3>
+            <div id="startScreenInputs">
+                <input id="nameInput" type="text" value="Nameless One"> <br>
+                <button id="startGame">ENTER THE ARENA</button><button id="howToPlay">HOW TO PLAY</button>
+                <button id="assets">CREDITS</button>
+            </div>
         </div>
-    </div>
-    <div id="howToPlayModal">
-        <div id="howToPlayTextbox">
-            <h1>How To Play</h1><br>
-            <h2><b>Getting Started</b></h2>
-            <p>
-                Your gladiator has six primary stats. As your gladiator gains experience and levels up, you gain additional stat points to further increase their power. <br>
-                <b><u>Strength</u></b> - Determines how much damage your gladiator deals in addition to base weapon damage. Also increases Energy required for your attacks <br>
-                <b><u>Attack</u></b> - Determines how accurate your gladiator's attacks are. Contested by your enemy's Defense stat <br>
-                <b><u>Defense</u></b> - Determines how hard your gladiator is to hit. Contested by your enemy's Attack stat <br>
-                <b><u>Vitality</u></b> - Determines how much Health your gladiator has <br>
-                <b><u>Stamina</u></b> - Determines how much Energy your gladiator has for attacking, defending, taunting, or winning the crowd <br>
-                <b><u>Charisma</u></b> - Determines bonus gold earned from fights, shop discounts, and the effectiveness of Taunts and Win the Crowd <br>
-            </p><br>
-            <h2><b>Combat Basics</b></h2>
-            <p>
-                Combat is turn-based. Each gladiator has the following actions available to them: <br>
-                <b><u>Attacks (light, medium, heavy)</u></b> - The gladiator attacks with their weapon. The heavier the attack, the more damage it will deal, the less
-                accuracy it will have, the higher the chance to land a critical strike, and the higher the Energy consumption <br>
-                <b><u>Taunt</u></b> - The gladiator uses their turn to try and rile up their opponent. If successful, the target receives a random debuff, or they miss their turn as
-                the taunter goads them into attacking before being countered for a free light hit <br>
-                <b><u>Win the Crowd</u></b> - The gladiator uses their turn to excite the crowd. The higher the mood of the crowd, the more gold that will be rewarded for the fight. <br>
-                <b><u>Rest</u></b> - The gladiator uses their turn to rest and regain 50% of their Energy pool <br>
-            </p><br>
-            <h2><b>The Arena</b></h2>
-            <p>
-                While in the arena, you have multiple options available to you for taking on your next opponent. First you must select whether it is a fight to the death or a fight
-                until either gladiator yields. Fights to the death offer substantially higher gold and experience rewards than fights ending in yields, but beware: if your gladiator
-                loses their life in the arena, they are dead for good. <br>
-                Additionally, you may select a normal, hard, or deadly fight. The harder the fight, the more powerful your opponent, but the greater the rewards for victory.
-            </p><br>
-            <h2><b>The Town</b></h2>
-            <p>
-                The town is the hub in which you will spend all of your time while outside of the Arena. Aside from your room in the inn for resting after your fights, you can find
-                both a weaponsmith's shop and an armorsmith's shop. These artisans will gladly sell or create stronger gear for you, provided you have the coin. Weapons increase your 
-                damage potential while armor makes you more durable and adds to your Armor pool. Visit them to see what items they have available, but do try to not waste their time...
-            </p>
-            <button id="closeHowToPlay">CLOSE</button>
+        <div id="howToPlayModal">
+            <div id="howToPlayTextbox">
+                <h1>How To Play</h1><br>
+                <h2><b>Getting Started</b></h2>
+                <p>
+                    Your gladiator has six primary stats. As your gladiator gains experience and levels up, you gain additional stat points to further increase their power. <br>
+                    <b><u>Strength</u></b> - Determines how much damage your gladiator deals in addition to base weapon damage. Also increases Energy required for your attacks <br>
+                    <b><u>Attack</u></b> - Determines how accurate your gladiator's attacks are. Contested by your enemy's Defense stat <br>
+                    <b><u>Defense</u></b> - Determines how hard your gladiator is to hit. Contested by your enemy's Attack stat <br>
+                    <b><u>Vitality</u></b> - Determines how much Health your gladiator has <br>
+                    <b><u>Stamina</u></b> - Determines how much Energy your gladiator has for attacking, defending, taunting, or winning the crowd <br>
+                    <b><u>Charisma</u></b> - Determines bonus gold earned from fights, shop discounts, and the effectiveness of Taunts and Win the Crowd <br>
+                </p><br>
+                <h2><b>Combat Basics</b></h2>
+                <p>
+                    Combat is turn-based. Each gladiator has the following actions available to them: <br>
+                    <b><u>Attacks (light, medium, heavy)</u></b> - The gladiator attacks with their weapon. The heavier the attack, the more damage it will deal, the less
+                    accuracy it will have, the higher the chance to land a critical strike, and the higher the Energy consumption <br>
+                    <b><u>Taunt</u></b> - The gladiator uses their turn to try and rile up their opponent. If successful, the target receives a random debuff, or they miss their turn as
+                    the taunter goads them into attacking before being countered for a free light hit <br>
+                    <b><u>Win the Crowd</u></b> - The gladiator uses their turn to excite the crowd. The higher the mood of the crowd, the more gold that will be rewarded for the fight. <br>
+                    <b><u>Rest</u></b> - The gladiator uses their turn to rest and regain 50% of their Energy pool <br>
+                </p><br>
+                <h2><b>The Arena</b></h2>
+                <p>
+                    While in the arena, you have multiple options available to you for taking on your next opponent. First you must select whether it is a fight to the death or a fight
+                    until either gladiator yields. Fights to the death offer substantially higher gold and experience rewards than fights ending in yields, but beware: if your gladiator
+                    loses their life in the arena, they are dead for good. <br>
+                    Additionally, you may select a normal, hard, or deadly fight. The harder the fight, the more powerful your opponent, but the greater the rewards for victory.
+                </p><br>
+                <h2><b>The Town</b></h2>
+                <p>
+                    The town is the hub in which you will spend all of your time while outside of the Arena. Aside from your room in the inn for resting after your fights, you can find
+                    both a weaponsmith's shop and an armorsmith's shop. These artisans will gladly sell or create stronger gear for you, provided you have the coin. Weapons increase your 
+                    damage potential while armor makes you more durable and adds to your Armor pool. Visit them to see what items they have available, but do try to not waste their time...
+                </p>
+                <button id="closeHowToPlay">CLOSE</button>
+            </div>
         </div>
-    </div>
-    <div id="characterStatScreen">
-        <h1 id="statScreenMessage">Welcome to the Arena, <span class="playerNameSpan">Nameless One</span>. We wonder what kind of warrior you are.</h1>
-        <h3>Remaining Stat Points to Allocate: <span class="statList" stat="statPoints">5</span></h3>
-        <div id="statAllocationWindow">
-            <table id="statTable">
-                <tr>
-                    <th>STAT</th>
-                    <th>LEVEL</th>
-                    <th id="adjustColumn">ADJUST</th>
-                </tr>
-                <tr>
-                    <td>STRENGTH</td>
-                    <td class="statList" stat="strength">0</td>
-                    <td><button class="statDecrementers" id="minusStrength" stat="strength">&lt;</button><button class="statIncrementers" id="plusStrength" stat="strength">&gt;</button></td>
-                </tr>
-                <tr>
-                    <td>ATTACK</td>
-                    <td class="statList" stat="attack">0</td>
-                    <td><button class="statDecrementers" id="minusAttack" stat="attack">&lt;</button><button class="statIncrementers" id="plusAttack" stat="attack">&gt;</button></td>
-                </tr>
-                <tr>
-                    <td>DEFENSE</td>
-                    <td class="statList" stat="defense">0</td>
-                    <td><button class="statDecrementers" id="minusDefense" stat="defense">&lt;</button><button class="statIncrementers" id="plusDefense" stat="defense">&gt;</button></td>
-                </tr>
-                <tr>
-                    <td>VITALITY</td>
-                    <td class="statList" stat="vitality">0</td>
-                    <td><button class="statDecrementers" id="minusVitality" stat="vitality">&lt;</button><button class="statIncrementers" id="plusVitality" stat="vitality">&gt;</button></td>
-                </tr>
-                <tr>
-                    <td>STAMINA</td>
-                    <td class="statList" stat="stamina">0</td>
-                    <td><button class="statDecrementers" id="minusStamina" stat="stamina">&lt;</button><button class="statIncrementers" id="plusStamina" stat="stamina">&gt;</button></td>
-                </tr>
-                <tr>
-                    <td>CHARISMA</td>
-                    <td class="statList" stat="charisma">0</td>
-                    <td><button class="statDecrementers" id="minusCharisma" stat="charisma">&lt;</button><button class="statIncrementers" id="plusCharisma" stat="charisma">&gt;</button></td>
-                </tr>
-            </table><br>
-            <button id="confirmStats">CONFIRM CHOICES</button><br><br>
-            <button id="leaveStats">BACK TO START SCREEN</button>
+        <div id="characterStatScreen">
+            <h1 id="statScreenMessage">Welcome to the Arena, <span class="playerNameSpan">Nameless One</span>. We wonder what kind of warrior you are.</h1>
+            <h3>Remaining Stat Points to Allocate: <span class="statList" stat="statPoints">5</span></h3>
+            <div id="statAllocationWindow">
+                <table id="statTable">
+                    <tr>
+                        <th>STAT</th>
+                        <th>LEVEL</th>
+                        <th id="adjustColumn">ADJUST</th>
+                    </tr>
+                    <tr>
+                        <td>STRENGTH</td>
+                        <td class="statList" stat="strength">0</td>
+                        <td><button class="statDecrementers" id="minusStrength" stat="strength">&lt;</button><button class="statIncrementers" id="plusStrength" stat="strength">&gt;</button></td>
+                    </tr>
+                    <tr>
+                        <td>ATTACK</td>
+                        <td class="statList" stat="attack">0</td>
+                        <td><button class="statDecrementers" id="minusAttack" stat="attack">&lt;</button><button class="statIncrementers" id="plusAttack" stat="attack">&gt;</button></td>
+                    </tr>
+                    <tr>
+                        <td>DEFENSE</td>
+                        <td class="statList" stat="defense">0</td>
+                        <td><button class="statDecrementers" id="minusDefense" stat="defense">&lt;</button><button class="statIncrementers" id="plusDefense" stat="defense">&gt;</button></td>
+                    </tr>
+                    <tr>
+                        <td>VITALITY</td>
+                        <td class="statList" stat="vitality">0</td>
+                        <td><button class="statDecrementers" id="minusVitality" stat="vitality">&lt;</button><button class="statIncrementers" id="plusVitality" stat="vitality">&gt;</button></td>
+                    </tr>
+                    <tr>
+                        <td>STAMINA</td>
+                        <td class="statList" stat="stamina">0</td>
+                        <td><button class="statDecrementers" id="minusStamina" stat="stamina">&lt;</button><button class="statIncrementers" id="plusStamina" stat="stamina">&gt;</button></td>
+                    </tr>
+                    <tr>
+                        <td>CHARISMA</td>
+                        <td class="statList" stat="charisma">0</td>
+                        <td><button class="statDecrementers" id="minusCharisma" stat="charisma">&lt;</button><button class="statIncrementers" id="plusCharisma" stat="charisma">&gt;</button></td>
+                    </tr>
+                </table><br>
+                <button id="confirmStats">CONFIRM CHOICES</button><br><br>
+                <button id="leaveStats">BACK TO START SCREEN</button>
+            </div>
         </div>
-    </div>
-    <div id="genericModal">
-        <div id="genericModalTextbox">
-            <h1 id="genericModalText">MESSAGE TEXT GOES HERE</h1><br>
-            <!-- <button id="closeGenericModal">CLOSE</button> -->
+        <div id="genericModal">
+            <div id="genericModalTextbox">
+                <h1 id="genericModalText">MESSAGE TEXT GOES HERE</h1><br>
+            </div>
         </div>
-    </div>
-    <div id="cutscene">
-        <h1 class="cutsceneEl" id="first">HERE</h1>
-        <h1 class="cutsceneEl" id="second">IS</h1>
-        <h1 class="cutsceneEl" id="third">SOME</h1>
-        <h1 class="cutsceneEl" id="fourth">TEXT</h1>
-        <button class="cutsceneEl" id="endCutscene">CONTINUE...</button>
-    </div>
-    <div id="battleScreen">
-        <div id="playerBattle">
-            <div id="playerInfo">
-                <h1><span class="playerNameSpan"></span></h1>
+        <div id="cutscene">
+            <h1 class="cutsceneEl" id="first">HERE</h1>
+            <h1 class="cutsceneEl" id="second">IS</h1>
+            <h1 class="cutsceneEl" id="third">SOME</h1>
+            <h1 class="cutsceneEl" id="fourth">TEXT</h1>
+            <button class="cutsceneEl" id="endCutscene">CONTINUE...</button>
+        </div>
+        <div id="battleScreen">
+            <div id="playerBattle">
+                <div id="playerInfo">
+                    <h1><span class="playerNameSpan"></span></h1>
+                    <div class="battleStatDisplay">
+                        <h2>HEALTH:</h2>
+                        <h2><span class="statList" stat="health" id="playerHealth">20</span> / <span class="statList" stat="maxHealth" id="playerMaxHealth">20</span></h2>
+                    </div>
+                    <div class="battleStatDisplay">
+                        <h2>ENERGY:</h2>
+                        <h2><span class="statList" stat="energy" id="playerEnergy">40</span> / <span class="statList" stat="maxEnergy" id="playerMaxEnergy">40</span></h2>
+                    </div>
+                    <div class="battleStatDisplay">
+                        <h2>ARMOR:</h2>
+                        <h2><span class="statList" stat="armorRemaining" id="playerArmor">0</span> / <span class="statList" stat="maxArmor" id="playerMaxArmor">0</span></h2>
+                    </div>
+                    <div class="battleStatDisplay">
+                        <h2>DEBUFF:</h2>
+                        <h2><span class="statList" stat="debuff" id="playerDebuff">NONE</span></h2>
+                    </div>
+                </div>
+                <div id="playerActionsContainer">
+                    <div id="playerAttacks">
+                        <button class="action" id="light">LIGHT ATTACK</button><br>
+                        <button class="action" id="medium">MEDIUM ATTACK</button><br>
+                        <button class="action" id="heavy">HEAVY ATTACK</button>
+                    </div>
+                    <button class="action" id="taunt">TAUNT</button>
+                    <button class="action" id="winTheCrowd">WIN THE CROWD</button>
+                    <button class="action" id="rest">REST</button>
+                </div>
+            </div>
+            <div id="enemyBattle">
+                <h1><span class="enemyStat" stat="gladiatorName" id="enemyName"></span></h1>
                 <div class="battleStatDisplay">
                     <h2>HEALTH:</h2>
-                    <h2><span class="statList" stat="health" id="playerHealth">20</span> / <span class="statList" stat="maxHealth" id="playerMaxHealth">20</span></h2>
+                    <h2><span class="enemyStat" stat="health" id="enemyHealth"></span> / <span class="enemyStat" stat="maxHealth" id="enemyMaxHealth"></span></h2>
                 </div>
                 <div class="battleStatDisplay">
                     <h2>ENERGY:</h2>
-                    <h2><span class="statList" stat="energy" id="playerEnergy">40</span> / <span class="statList" stat="maxEnergy" id="playerMaxEnergy">40</span></h2>
+                    <h2><span class="enemyStat" stat="energy" id="enemyEnergy"></span> / <span class="enemyStat" stat="maxEnergy" id="enemyMaxEnergy"></span></h2>
                 </div>
                 <div class="battleStatDisplay">
                     <h2>ARMOR:</h2>
-                    <h2><span class="statList" stat="armorRemaining" id="playerArmor">0</span> / <span class="statList" stat="maxArmor" id="playerMaxArmor">0</span></h2>
+                    <h2><span class="enemyStat" stat="armorRemaining" id="enemyArmor"></span> / <span class="enemyStat" stat="maxArmor" id="enemyMaxArmor"></span></h2>
                 </div>
                 <div class="battleStatDisplay">
                     <h2>DEBUFF:</h2>
-                    <h2><span class="statList" stat="debuff" id="playerDebuff">NONE</span></h2>
+                    <h2><span class="enemyStat" stat="debuff" id="enemyDebuff">NONE</span></h2>
                 </div>
             </div>
-            <div id="playerActionsContainer">
-                <div id="playerAttacks">
-                    <button class="action" id="light">LIGHT ATTACK</button><br>
-                    <button class="action" id="medium">MEDIUM ATTACK</button><br>
-                    <button class="action" id="heavy">HEAVY ATTACK</button>
+            <div id="battleMessagesContainer">
+                <div id="crowdContainer">
+                    <div id="crowd">Crowd</div>
                 </div>
-                <button class="action" id="taunt">TAUNT</button>
-                <button class="action" id="winTheCrowd">WIN THE CROWD</button>
-                <button class="action" id="rest">REST</button>
+                <h1 id="battleMessages">The crowd looks on with curiosity as you engage your opponent.</h1>
+                <button id="leaveBattle">CONTINUE...</button>
             </div>
         </div>
-        <div id="enemyBattle">
-            <h1><span class="enemyStat" stat="gladiatorName" id="enemyName"></span></h1>
-            <div class="battleStatDisplay">
-                <h2>HEALTH:</h2>
-                <h2><span class="enemyStat" stat="health" id="enemyHealth"></span> / <span class="enemyStat" stat="maxHealth" id="enemyMaxHealth"></span></h2>
-            </div>
-            <div class="battleStatDisplay">
-                <h2>ENERGY:</h2>
-                <h2><span class="enemyStat" stat="energy" id="enemyEnergy"></span> / <span class="enemyStat" stat="maxEnergy" id="enemyMaxEnergy"></span></h2>
-            </div>
-            <div class="battleStatDisplay">
-                <h2>ARMOR:</h2>
-                <h2><span class="enemyStat" stat="armorRemaining" id="enemyArmor"></span> / <span class="enemyStat" stat="maxArmor" id="enemyMaxArmor"></span></h2>
-            </div>
-            <div class="battleStatDisplay">
-                <h2>DEBUFF:</h2>
-                <h2><span class="enemyStat" stat="debuff" id="enemyDebuff">NONE</span></h2>
-            </div>
-        </div>
-        <div id="battleMessagesContainer">
-            <div id="crowdContainer">
-                <div id="crowd">Crowd</div>
-            </div>
-            <h1 id="battleMessages">The crowd looks on with curiosity as you engage your opponent.</h1>
-            <button id="leaveBattle">CONTINUE...</button>
-        </div>
-    </div>
-</body>
+    </body>
 </html>
