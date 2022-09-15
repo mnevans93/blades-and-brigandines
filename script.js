@@ -55,6 +55,15 @@ let crowdBarPercentage = 0.1
 let battleRound = 1
 let enemyTurn = false
 
+const levelUps = [
+    0, //level 0, not used
+    100, //level 1, 100 xp for level 2
+    250, //level 2, 250 xp for level 3, etc.
+    750, 
+    2000,
+    0, //no levels after 5 for now
+]
+
 //
 //
 //
@@ -176,7 +185,7 @@ class Gladiator {
     constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50,
         armorRemaining=0, maxArmor=0, debuff='NONE', debuffClear=null, statPoints=5, 
         strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, 
-        gold=0, defeatedOpponents=0, experienceReward=0, goldReward=0) {
+        nextLevelUp=100, gold=0, defeatedOpponents=0, experienceReward=0, goldReward=0) {
         this.gladiatorName = gladiatorName
         this.level = level
         this.health = health
@@ -195,6 +204,7 @@ class Gladiator {
         this.stamina = stamina
         this.charisma = charisma
         this.experience = experience
+        this.nextLevelUp = nextLevelUp
         this.gold = gold
         this.defeatedOpponents = defeatedOpponents
         this.experienceReward = experienceReward
@@ -259,13 +269,40 @@ class Gladiator {
                 let critMultiplier = this.checkIfCritical(attackType)
                 let totalDamage = this.calcDamage(attackType) * critMultiplier
                 if (critMultiplier === 2) {
-                    target.health -= totalDamage 
+                    target.health -= totalDamage
+                    if (this === playerGladiator) {
+                        if (attackType === 'light') {this.generateBattleMessage(`CRITICAL! Your flourish catches your opponent completely off-guard. Blood sprays the sands.`)}
+                        if (attackType === 'medium') {this.generateBattleMessage(`CRITICAL! Your swing meets flesh and bone, sending your opponent reeling.`)}
+                        if (attackType === 'heavy') {this.generateBattleMessage(`CRITICAL! Your opponent feels the full weight of your fury. Somehow, they're still alive.`)}
+                    } else {
+                        if (attackType === 'light') {this.generateBattleMessage(`CRITICAL! A careless mistake in your guard makes this quick strike hurt much more than it should have.`)}
+                        if (attackType === 'medium') {this.generateBattleMessage(`CRITICAL! You try to parry the swing, but it is in vain as the blade rips into you.`)}
+                        if (attackType === 'heavy') {this.generateBattleMessage(`CRITICAL! A swing that would make the Reaper envious. Miraculously, it didn't kill you.`)}
+                    }
                 } else {
                     this.checkArmor(totalDamage, target)
+                    if (this === playerGladiator) {
+                        if (attackType === 'light') {this.generateBattleMessage(`Your quick jab lands, wounding your opponent.`)}
+                        if (attackType === 'medium') {this.generateBattleMessage(`Your strike is well-timed, your opponent stumbling backwards as it connects.`)}
+                        if (attackType === 'heavy') {this.generateBattleMessage(`Your mighty swing cleaves into your opponent, grievously injuring them.`)}
+                    } else {
+                        if (attackType === 'light') {this.generateBattleMessage(`Your opponent slips between your guard with a quick strike. You wince.`)}
+                        if (attackType === 'medium') {this.generateBattleMessage(`You try to block the strike, but your opponent overwhelms you, wounding you.`)}
+                        if (attackType === 'heavy') {this.generateBattleMessage(`Your vision darkens as the vicious swing lands... but you're not dead. Yet.`)}
+                    }
+                }
+            } else {
+                if (this === playerGladiator) {
+                    if (attackType === 'light') {this.generateBattleMessage(`You go for a quick strike and are just as quickly deflected.`)}
+                    if (attackType === 'medium') {this.generateBattleMessage(`Your well-balanced strike meets your opponent's blade, stopping short of harm.`)}
+                    if (attackType === 'heavy') {this.generateBattleMessage(`You put all your might into your swing, but your opponent darts out of the way.`)}
+                } else {
+                    if (attackType === 'light') {this.generateBattleMessage(`You easily parry your opponent's weak excuse for an attack.`)}
+                    if (attackType === 'medium') {this.generateBattleMessage(`Your blade collides with your opponent's swing as you push them back.`)}
+                    if (attackType === 'heavy') {this.generateBattleMessage(`The might behind your opponent's swing meets the sands while you remain unscathed.`)}
                 }
             }
         }
-        target.checkHealth()
         renderStats()
         return false
     }
@@ -376,7 +413,7 @@ class Gladiator {
     checkHealth() {
         if (this.health <= 0) {
             if (this === enemyGladiator) {
-                this.generateBattleMessage('victory', null)
+                //win fight
             } else {
                 //game over
             }
@@ -393,16 +430,43 @@ class Gladiator {
             if (rng >= 0.9) {
                 target.debuff = countered
                 this.makeAttack(target, 'light')
+                if (this === playerGladiator) {
+                    this.generateBattleMessage(`You goad your opponent into attacking before skillfully countering them.`)
+                } else {
+                    this.generateBattleMessage(`Your opponent taunts and baits you into a well-timed counter.`)
+                }
             } else if (rng >= 0.6) {
                 target.debuff = exhausted
                 target.energy -= target.maxEnergy * exhausted.debuffMultiplier
+                if (this === playerGladiator) {
+                    this.generateBattleMessage(`You unleash a rapid series of feints that tires out your opponent as they dodge imaginary strikes.`)
+                } else {
+                    this.generateBattleMessage(`Your opponent unleashes a flurry of quick attacks that never quite connect, exhausting you in the process.`)
+                }
             } else if (rng >= 0.3) {
                 target.debuff = distracted
+                if (this === playerGladiator) {
+                    this.generateBattleMessage(`You temporarily distract your opponent, opening them up to your next attack...`)
+                } else {
+                    this.generateBattleMessage(`Your opponent distracts you just enough that you don't see a well-disguised strike coming...`)
+                }
             } else {
                 target.debuff = enraged
+                if (this === playerGladiator) {
+                    this.generateBattleMessage(`You rile up your opponent and bait them into swinging wildly.`)
+                } else {
+                    this.generateBattleMessage(`Your opponent draws your ire, and your rage makes you momentarily sloppy.`)
+                }
             }
             target.debuffClear = battleRound + target.debuff.expiration
+        } else {
+            if (this === playerGladiator) {
+                this.generateBattleMessage(`You attempt to get a rise out of your opponent, but they don't take the bait.`)
+            } else {
+                this.generateBattleMessage(`Your opponent makes a poor attempt at taunting you, and you simply ignore it.`)
+            }
         }
+
         renderStats()
         return false
     }
@@ -411,6 +475,13 @@ class Gladiator {
         if (this.checkEnergy() === false) {return true}
         this.energy -= 10
         this.calcCrowd('winTheCrowd')
+        
+        if (this === playerGladiator) {
+            this.generateBattleMessage(`You focus on the crowd and flourish dramatically, mostly ignoring your opponent.`)
+        } else {
+            this.generateBattleMessage(`Your opponent showboats for the crowd, getting a rise out of them.`)
+        }
+
         renderStats()
         return false
     }
@@ -420,11 +491,18 @@ class Gladiator {
             displayGenericModal('Your energy is already full.')
             return true
         }
-        this.energy += this.maxEnergy * 0.5
-        this.health += this.maxHealth * 0.05
+        this.energy = Math.round(this.energy + this.maxEnergy * 0.5)
+        this.health = Math.round(this.health + this.maxHealth * 0.05)
         if (this.energy > this.maxEnergy) {this.energy = this.maxEnergy}
         if (this.health > this.maxHealth) {this.health = this.maxHealth}
         this.calcCrowd('rest')
+        
+        if (this === playerGladiator) {
+            this.generateBattleMessage(`You try to keep up your defenses while catching your breath.`)
+        } else {
+            this.generateBattleMessage(`Looking winded, your opponent tries to catch their breath.`)
+        }
+
         renderStats()
         return false
     }
@@ -436,12 +514,46 @@ class Gladiator {
         }
     }
 
-    generateBattleMessage(messageText) {
-
+    generateBattleMessage(text) {
+        battleMessages.innerText = text
     }
 
-    enemyAction() {
+    decideAction(target) {
+        if (this.energy <= 0) {
+            this.rest()
+            return
+        }
+        let rng = Math.random()
+        if (this.energy === this.maxEnergy) {
+            if (rng <= 0.7) {
+                this.decideAttack(target)
+            } else if (rng <= 0.9) {
+                this.taunt(target)
+            } else {
+                this.winTheCrowd()
+            }
+        } else {
+            if (rng <= 0.6) {
+                this.decideAttack(target)
+            } else if (rng <= 0.8) {
+                this.taunt(target)
+            } else if (rng <= 0.9) {
+                this.winTheCrowd()
+            } else {
+                this.rest()
+            }
+        }
+    }
 
+    decideAttack(target) {
+        let attackRNG = Math.random()
+        if (attackRNG <= 0.5) {
+            this.makeAttack(target, 'light')
+        } else if (attackRNG <= 0.85) {
+            this.makeAttack(target, 'medium')
+        } else {
+            this.makeAttack(target, 'heavy')
+        }
     }
 }
 
@@ -558,12 +670,12 @@ function progressBattle() {
     if (enemyGladiator.debuff != countered) {
         playerActions.style.opacity = 0
         enemyTurn = true
-        //enemy does their turn, need logic for this
         if (playerGladiator.debuff != countered) {
             setTimeout(() => {
+                enemyGladiator.decideAction(playerGladiator)
                 playerActions.style.opacity = 1
                 enemyTurn = false
-            }, 2000)
+            }, 3000)
         } else {
             playerGladiator.debuffHandler()
             progressBattle()
