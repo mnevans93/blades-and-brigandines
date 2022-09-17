@@ -10,6 +10,7 @@ const battleMusic = new Audio('Audio/stopWar.mp3')
 battleMusic.volume = 0.175
 battleMusic.loop = true
 const townMusic = new Audio('Audio/aStarlessNight.mp3')
+townMusic.volume = 0.75
 townMusic.loop = true
 
 //QUERY SELECTOR ALL VARIABLES
@@ -163,81 +164,81 @@ class BattleMessage {
 
 const allBattleMessages = [
     lightAtk = new BattleMessage(
-        playerSuccessText = `Your quick jab lands, wounding your opponent.`,
-        playerFailText = `You go for a quick strike and are just as quickly deflected.`,
-        enemySuccessText = `Your opponent slips between your guard with a quick strike. You wince.`,
-        enemyFailText = `You easily parry your opponent's weak excuse for an attack.`,
+        playerSuccessText = `LIGHT HIT: Your quick jab lands, wounding your opponent.`,
+        playerFailText = `LIGHT MISS: You go for a quick strike and are just as quickly deflected.`,
+        enemySuccessText = `LIGHT HIT: Your opponent slips between your guard with a quick strike. You wince.`,
+        enemyFailText = `LIGHT MISS: You easily parry your opponent's weak excuse for an attack.`,
     ),
     medAtk = new BattleMessage(
-        playerSuccessText = `Your strike is well-timed, your opponent stumbling backwards as it connects.`,
-        playerFailText = `Your well-balanced strike meets your opponent's blade, stopping short of harm.`,
-        enemySuccessText = `You try to block the strike, but your opponent overwhelms you, wounding you.`,
-        enemyFailText = `Your blade collides with your opponent's swing as you push them back.`,
+        playerSuccessText = `MED HIT: Your strike is well-timed, your opponent stumbling backwards as it connects.`,
+        playerFailText = `MED MISS: Your well-balanced strike meets your opponent's blade, stopping short of harm.`,
+        enemySuccessText = `MED HIT: You try to block the strike, but your opponent overwhelms you, wounding you.`,
+        enemyFailText = `MED MISS: Your blade collides with your opponent's swing as you push them back.`,
     ),
     heavyAtk = new BattleMessage(
-        playerSuccessText = `Your mighty swing cleaves into your opponent, grievously injuring them.`,
-        playerFailText = `You put all your might into your swing, but your opponent darts out of the way.`,
-        enemySuccessText = `Your vision darkens as the vicious swing lands... but you're not dead. Yet.`,
-        enemyFailText = `The might behind your opponent's swing meets the sands while you remain unscathed.`,
+        playerSuccessText = `HEAVY HIT: Your mighty swing cleaves into your opponent, grievously injuring them.`,
+        playerFailText = `HEAVY MISS: You put all your might into your swing, but your opponent darts out of the way.`,
+        enemySuccessText = `HEAVY HIT: Your vision darkens as the vicious swing lands... but you're not dead. Yet.`,
+        enemyFailText = `HEAVY MISS: The might behind your opponent's swing meets the sands while you remain unscathed.`,
     ),
     lightAtkCrit = new BattleMessage(
-        playerSuccessText = `CRITICAL! Your flourish catches your opponent completely off-guard. Blood sprays the sands.`,
+        playerSuccessText = `LIGHT CRITICAL HIT! Your flourish catches your opponent completely off-guard. Blood sprays the sands.`,
         playerFailText = null,
-        enemySuccessText = `CRITICAL! A careless mistake in your guard makes this quick strike hurt much more than it should have.`,
+        enemySuccessText = `LIGHT CRITICAL HIT! A careless mistake in your guard makes this quick strike hurt much more than it should have.`,
         enemyFailText = null,
     ),
     medAtkCrit = new BattleMessage(
-        playerSuccessText = `CRITICAL! Your swing meets flesh and bone, sending your opponent reeling.`,
+        playerSuccessText = `MED CRITICAL HIT! Your swing meets flesh and bone, sending your opponent reeling.`,
         playerFailText = null,
-        enemySuccessText = `CRITICAL! You try to parry the swing, but it is in vain as the blade rips into you.`,
+        enemySuccessText = `MED CRITICAL HIT! You try to parry the swing, but it is in vain as the blade rips into you.`,
         enemyFailText = null,
     ),
     heavyAtkCrit = new BattleMessage(
-        playerSuccessText = `CRITICAL! Your opponent feels the full weight of your fury. Somehow, they're still alive.`,
+        playerSuccessText = `HEAVY CRITICAL HIT! Your opponent feels the full weight of your fury. Somehow, they're still alive.`,
         playerFailText = null,
-        enemySuccessText = `CRITICAL! A swing that would make the Reaper envious. Miraculously, it didn't kill you.`,
+        enemySuccessText = `HEAVY CRITICAL HIT! A swing that would make the Reaper envious. Miraculously, it didn't kill you.`,
         enemyFailText = null,
     ),
     tauntFailMsg = new BattleMessage(
         playerSuccessText = null,
-        playerFailText = `You attempt to get a rise out of your opponent, but they don't take the bait.`,
+        playerFailText = `TAUNT FAILED: You attempt to get a rise out of your opponent, but they don't take the bait.`,
         enemySuccessText = null,
-        enemyFailText = `Your opponent makes a poor attempt at taunting you, and you simply ignore it.`,
+        enemyFailText = `TAUNT FAILED: Your opponent makes a poor attempt at taunting you, and you simply ignore it.`,
     ),
     tauntCounterMsg = new BattleMessage(
-        playerSuccessText = `You goad your opponent into attacking before skillfully countering them.`,
+        playerSuccessText = `COUNTERED: You goad your opponent into attacking before skillfully countering them.`,
         playerFailText = null,
-        enemySuccessText = `Your opponent taunts and baits you into a well-timed counter.`,
+        enemySuccessText = `COUNTERED: Your opponent taunts and baits you into a well-timed counter.`,
         enemyFailText = null,
     ),
     tauntExhaustedMsg = new BattleMessage(
-        playerSuccessText = `You unleash a rapid series of feints that tires out your opponent as they dodge imaginary strikes.`,
+        playerSuccessText = `EXHAUSTED: You unleash a rapid series of feints that tires out your opponent as they dodge imaginary strikes.`,
         playerFailText = null,
-        enemySuccessText = `Your opponent makes a flurry of quick attacks that never quite connect, exhausting you in the process.`,
+        enemySuccessText = `EXHAUSTED: Your opponent makes a flurry of quick attacks that never quite connect, exhausting you as you dodge them.`,
         enemyFailText = null,
     ),
     tauntDistractedMsg = new BattleMessage(
-        playerSuccessText = `You temporarily distract your opponent, opening them up to your next attack...`,
+        playerSuccessText = `DISTRACTED: You temporarily distract your opponent, opening them up to your next attack...`,
         playerFailText = null,
-        enemySuccessText = `Your opponent distracts you just enough that you don't see a well-disguised strike coming...`,
+        enemySuccessText = `DISTRACTED: Your opponent distracts you just enough that you don't see a well-disguised strike coming...`,
         enemyFailText = null,
     ),
     tauntEnragedMsg = new BattleMessage(
-        playerSuccessText = `You rile up your opponent and bait them into swinging wildly.`,
+        playerSuccessText = `ENRAGED: You rile up your opponent and bait them into swinging wildly.`,
         playerFailText = null,
-        enemySuccessText = `Your opponent draws your ire, and your rage makes you momentarily sloppy.`,
+        enemySuccessText = `ENRAGED: Your opponent draws your ire, and your rage makes you momentarily sloppy.`,
         enemyFailText = null,
     ),
     winTheCrowdMsg = new BattleMessage(
-        playerSuccessText = `You focus on the crowd and flourish dramatically, mostly ignoring your opponent.`,
+        playerSuccessText = `WIN THE CROWD: You focus on the crowd and flourish dramatically, mostly ignoring your opponent.`,
         playerFailText = null,
-        enemySuccessText = `Your opponent showboats for the crowd while paying you little mind.`,
+        enemySuccessText = `WIN THE CROWD: Your opponent showboats for the crowd while paying you little mind.`,
         enemyFailText = null,
     ),
     restMsg = new BattleMessage(
-        playerSuccessText = `You try to keep up your defenses while catching your breath.`,
+        playerSuccessText = `REST: You try to keep up your defenses while catching your breath.`,
         playerFailText = null,
-        enemySuccessText = `Looking winded, your opponent tries to catch their breath.`,
+        enemySuccessText = `REST: Looking winded, your opponent tries to catch their breath.`,
         enemyFailText = null,
     ),
     battleEndMsg = new BattleMessage(

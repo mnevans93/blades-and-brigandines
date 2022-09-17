@@ -3,9 +3,13 @@
 :root {
     --game-background-image: url('Images/mainBackground.jfif');
     --textbox-and-cutscene-background-image: url('Images/textboxBackground.jpg');
-    --arena-background-image: url('Images/Arena Background.png');
+    --arena-background-image: url('Images/arenaBackground.jpg');
+    --town-background-image: url('Images/townBackground.jpg');
+    --arena-outside-background-image: url('Images/arena outside.png');
     --text-and-border: rgb(202, 37, 37);
     --on-hover: white;
+    --modal-background: rgba(65, 54, 40, 0.9);
+    --town-container-background: rgba(0, 0, 0, 0.8);
 }
 
 body {
@@ -16,7 +20,7 @@ body {
 }
 
 p {
-    font-size: 20px;
+    font-size: 1.25em;
     line-height: 110%;
 }
 
@@ -108,7 +112,7 @@ button:active {
 }
 
 #howToPlayModal, #genericModal {
-    background-color: rgba(65, 54, 40, 0.9);
+    background-color: var(--modal-background);
     position: fixed;
     top: 0;
     left: 0;
@@ -241,6 +245,13 @@ th, td {
 
 #battleScreen {
     display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-image: var(--arena-background-image);
+    background-size: cover;
     flex-direction: row;
     justify-content: space-between;
     margin: auto;
@@ -262,17 +273,18 @@ th, td {
     border-radius: 25px;
 }
 
-#playerBattle {
+#playerBattle, #enemyBattle {
     display: flex;
     flex-direction: column;
     background-image: var(--textbox-and-cutscene-background-image);
     margin: 2%;
     width: 45%;
+    height: fit-content;
     border: solid var(--text-and-border) 2px;
     border-radius: 25px;
 }
 
-#playerInfo {
+#playerInfo, #enemyInfo {
     margin-left: 3%;
     margin-right: 3%;
 }
@@ -280,13 +292,16 @@ th, td {
 .battleStatDisplay {
     flex-direction: row;
     justify-content: space-between;
+    margin: 1%;
+    height: 3em;
 }
 
 .battleStatDisplay > h2 {
     display: inline-block;
+    vertical-align: middle;
 }
 
-#playerActionsContainer {
+#playerActionsContainer, #enemyActionsContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -295,32 +310,26 @@ th, td {
     text-align: center;
 }
 
-#playerActionsContainer > button {
+#enemyActionsContainer {
+    opacity: 0;
+}
+
+#playerActionsContainer > button, #enemyActionsContainer > button {
     width: 20%;
-    height: 50%;
+    height: 4em;
     font-size: 1.25em;
 }
 
-#playerAttacks {
+#playerAttacks, #enemyAttacks {
     flex-direction: column;
     width: 25%;
 }
 
-#playerAttacks > button {
+#playerAttacks > button, #enemyAttacks > button {
     width: 100%;
     margin: 1%;
-    padding: 10px 20px 10px 20px;
+    padding: 10px;
     font-size: 1.25em;
-}
-
-#enemyBattle {
-    display: flex;
-    flex-direction: column;
-    background-image: var(--textbox-and-cutscene-background-image);
-    margin: 2%;
-    width: 45%;
-    border: solid var(--text-and-border) 2px;
-    border-radius: 25px;
 }
 
 #battleMessagesContainer {
@@ -339,4 +348,46 @@ th, td {
     margin: 25px;
     font-size: 24px;
     float: right;
+}
+
+#townScreen {
+    display: none;
+    position: fixed;
+    background-image: var(--town-background-image);
+    background-size: cover;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    margin: 0;
+}
+
+#buildingsContainer, .buildingInterface {
+    display: flex;
+    background-color: var(--town-container-background);
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 50%;
+    width: 45%;
+    align-items: center;
+    padding: 10px 20px 10px 20px;
+    border-radius: 25px;
+    margin: 1%;
+}
+
+#buildingsContainer > h1, .buildingInterface > h1 {
+    background-image: var(--textbox-and-cutscene-background-image);
+    padding: 10px 20px 10px 20px;
+    border-radius: 25px;
+    width: 80%;
+    font-size: 2em;
+    margin-top: 0.5%;
+}
+
+#buildingsContainer > button {
+    width: 40%;
+    font-size: 1em;
 }

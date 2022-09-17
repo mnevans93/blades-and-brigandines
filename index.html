@@ -146,7 +146,7 @@
                 <div id="playerActionsContainer">
                     <div id="playerAttacks">
                         <button class="action" id="light">LIGHT ATTACK</button><br>
-                        <button class="action" id="medium">MEDIUM ATTACK</button><br>
+                        <button class="action" id="medium">MED ATTACK</button><br>
                         <button class="action" id="heavy">HEAVY ATTACK</button>
                     </div>
                     <button class="action" id="taunt">TAUNT</button>
@@ -155,22 +155,34 @@
                 </div>
             </div>
             <div id="enemyBattle">
-                <h1><span class="enemyStat" stat="gladiatorName" id="enemyName"></span></h1>
-                <div class="battleStatDisplay">
-                    <h2>HEALTH:</h2>
-                    <h2><span class="enemyStat" stat="health" id="enemyHealth"></span> / <span class="enemyStat" stat="maxHealth" id="enemyMaxHealth"></span></h2>
+                <div id="enemyInfo">
+                    <h1><span class="enemyStat" stat="gladiatorName" id="enemyName"></span></h1>
+                    <div class="battleStatDisplay">
+                        <h2>HEALTH:</h2>
+                        <h2><span class="enemyStat" stat="health" id="enemyHealth"></span> / <span class="enemyStat" stat="maxHealth" id="enemyMaxHealth"></span></h2>
+                    </div>
+                    <div class="battleStatDisplay">
+                        <h2>ENERGY:</h2>
+                        <h2><span class="enemyStat" stat="energy" id="enemyEnergy"></span> / <span class="enemyStat" stat="maxEnergy" id="enemyMaxEnergy"></span></h2>
+                    </div>
+                    <div class="battleStatDisplay">
+                        <h2>ARMOR:</h2>
+                        <h2><span class="enemyStat" stat="armorRemaining" id="enemyArmor"></span> / <span class="enemyStat" stat="maxArmor" id="enemyMaxArmor"></span></h2>
+                    </div>
+                    <div class="battleStatDisplay">
+                        <h2>DEBUFF:</h2>
+                        <h2><span class="enemyStat" stat="debuff" id="enemyDebuff">NONE</span></h2>
+                    </div>
                 </div>
-                <div class="battleStatDisplay">
-                    <h2>ENERGY:</h2>
-                    <h2><span class="enemyStat" stat="energy" id="enemyEnergy"></span> / <span class="enemyStat" stat="maxEnergy" id="enemyMaxEnergy"></span></h2>
-                </div>
-                <div class="battleStatDisplay">
-                    <h2>ARMOR:</h2>
-                    <h2><span class="enemyStat" stat="armorRemaining" id="enemyArmor"></span> / <span class="enemyStat" stat="maxArmor" id="enemyMaxArmor"></span></h2>
-                </div>
-                <div class="battleStatDisplay">
-                    <h2>DEBUFF:</h2>
-                    <h2><span class="enemyStat" stat="debuff" id="enemyDebuff">NONE</span></h2>
+                <div id="enemyActionsContainer">
+                    <div id="enemyAttacks">
+                        <button>LIGHT ATTACK</button><br>
+                        <button>MED ATTACK</button><br>
+                        <button>HEAVY ATTACK</button>
+                    </div>
+                    <button>TAUNT</button>
+                    <button>WIN THE CROWD</button>
+                    <button>REST</button>
                 </div>
             </div>
             <div id="battleMessagesContainer">
@@ -182,7 +194,32 @@
             </div>
         </div>
         <div id="townScreen">
-            
+            <div id="buildingsContainer">
+                <h1>The Town</h1>
+                <button id="arena">Enter the Arena</button><br>
+                <button id="inn">Go to Stone's Throw Inn</button><br>
+                <button id="weaponsmith">Visit the Weaponsmith</button><br>
+                <button id="armorer">Visit the Armorer</button>
+            </div>
+            <div class="buildingInterface" id="arenaInterface">
+                <h1 class="buildingName">The Arena</h1>
+                <!-- stuff goes here -->
+            </div>
+            <div class="buildingInterface" id="innInterface">
+                <h1 class="buildingName">Stone's Throw Inn</h1>
+                <h2 class="buildingDesc">So named for its distance from the Arena.</h2>
+                <!-- stuff goes here -->
+            </div>
+            <div class="buildingInterface" id="weaponsmithInterface">
+                <h1 class="buildingName">Phoenix Forge Weapons</h1>
+                <h2 class="buildingDesc">Well-made weaponry purpose built to send your foes to the afterlife.</h2>
+                <!-- stuff goes here -->
+            </div>
+            <div class="buildingInterface" id="armorsmithInterface">
+                <h1 class="buildingName"></h1>
+                <h2 class="buildingDesc"></h2>
+                <!-- stuff goes here -->
+            </div>
         </div>
     </body>
 </html>
