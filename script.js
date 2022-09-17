@@ -9,6 +9,8 @@ cutsceneMusic.loop = true
 const battleMusic = new Audio('Audio/stopWar.mp3')
 battleMusic.volume = 0.15
 battleMusic.loop = true
+const townMusic = new Audio('Audio/aStarlessNight.mp3')
+townMusic.loop = true
 
 //QUERY SELECTOR ALL VARIABLES
 const allButtons = document.querySelectorAll('button')
@@ -44,6 +46,7 @@ const battleRoundEl = document.getElementById('battleRound')
 const crowdBar = document.getElementById('crowd')
 const playerActions = document.getElementById('playerActionsContainer')
 const leaveBattleBtn = document.getElementById('leaveBattle')
+const townScreen = document.getElementById('townScreen')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
@@ -55,15 +58,8 @@ let activeCutscene = null
 let crowdBarPercentage = 0.1
 let battleRound = 1
 let enemyTurn = false
-
-const levelUps = [
-    0, //level 0, not used
-    100, //level 1, 100 xp for level 2
-    250, //level 2, 250 xp for level 3, etc.
-    750, 
-    2000,
-    0, //no levels after 5 for now
-]
+let leaveBattleBtnBehavior = ''
+let storyPhase = 0
 
 //
 //
@@ -74,11 +70,10 @@ const levelUps = [
 //
 
 class Cutscene {
-    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic, postCutsceneMusicInterval) {
+    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic) {
         this.cutsceneText = [firstElText, secondElText, thirdElText, fourthElText, buttonText]
         this.postCutsceneScreen = postCutsceneScreen
         this.postCutsceneMusic = postCutsceneMusic
-        this.postCutsceneMusicInterval = postCutsceneMusicInterval
     }
 
     fillCutsceneText = () => {
@@ -113,8 +108,29 @@ const cutscenes = [
         buttonText = `IT'S TIME TO FIGHT.`,
         postCutsceneScreen = battleScreen,
         postCutsceneMusic = battleMusic,
-        postCutsceneMusicInterval = 75000,
         postCutsceneBattle = true
+    ),
+
+    firstFightDoneCutscene = new Cutscene(
+        firstElText = ``,
+        secondElText = ``,
+        thirdElText = ``,
+        fourthElText = ``,
+        buttonText = ``,
+        postCutsceneScreen = ``,
+        postCutsceneMusic = townMusic,
+        postCutsceneBattle = false
+    ),
+
+    playerLosesCutscene = new Cutscene(
+        firstElText = ``,
+        secondElText = ``,
+        thirdElText = ``,
+        fourthElText = ``,
+        buttonText = ``,
+        postCutsceneScreen = startScreen,
+        postCutsceneMusic = startMusic,
+        postCutsceneBattle = false
     )
 ]
 
@@ -217,6 +233,12 @@ const allBattleMessages = [
         enemySuccessText = `Looking winded, your opponent tries to catch their breath.`,
         enemyFailText = null,
     ),
+    battleEndMsg = new BattleMessage(
+        playerSuccessText = `With one final strike, your opponent's body slumps to the ground.`,
+        playerFailText = `...is this the end?`,
+        enemySuccessText = null,
+        enemyFailText = null,
+    )
 ]
 
 class Debuff {
@@ -316,6 +338,15 @@ class Gladiator {
     equippedItems = [
         this.weapon = rustyBlade,
         this.armor = plainClothing
+    ]
+
+    levelUps = [
+        0, //level 0, not used
+        100, //level 1, 100 xp for level 2
+        250, //level 2, 250 xp for level 3, etc.
+        750, 
+        2000,
+        0, //no levels after 5 for now
     ]
 
     increaseStat(stat) {
@@ -741,8 +772,26 @@ function progressBattle() {
 function endBattle(didPlayerWin) {
     leaveBattleBtn.style.display = 'flex'
     pauseSound(battleMusic)
-    if (didPlayerWin === false) {
+    if (didPlayerWin === true) {
+        battleEndMsg.generateBattleMessage(playerGladiator, 'success')
+        if (storyPhase === 0) {
+            firstFightDoneCutscene.renderCutscene()
+            storyPhase = 1
+        } else {
+            leaveBattleBtnBehavior = null
+        }
+    } else {
+        battleEndMsg.generateBattleMessage(playerGladiator, 'fail')
+        leaveBattleBtnBehavior = playerLosesCutscene
+    }
+}
 
+function leaveBattle() {
+    if (leaveBattleBtnBehavior === Cutscene) {
+        leaveBattleBtnBehavior.renderCutscene()
+    } else {
+        nextScreen = townScreen
+        toggleScreen('none')
     }
 }
 
@@ -873,5 +922,5 @@ allActionBtns.forEach(button => {
 })
 
 leaveBattleBtn.addEventListener('click', (event) => {
-
+    leaveBattle()
 })

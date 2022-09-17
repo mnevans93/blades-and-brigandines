@@ -327,6 +327,7 @@ th, td {
     background-image: var(--textbox-and-cutscene-background-image);
     position: fixed;
     text-align: center;
+    justify-content: center;
     bottom: 25px;
     left: 2%;
     right: 2%;
@@ -337,4 +338,5 @@ th, td {
     display: none;
     margin: 25px;
     font-size: 24px;
+    float: right;
 }
