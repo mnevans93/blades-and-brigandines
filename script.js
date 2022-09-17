@@ -22,6 +22,8 @@ const statLists = document.querySelectorAll('.statList')
 const cutsceneElements = document.querySelectorAll('.cutsceneEl')
 const allActionBtns = document.querySelectorAll('.action')
 const enemyStats = document.querySelectorAll('.enemyStat')
+const townOpenBtns = document.querySelectorAll('.buildingOpen')
+const townCloseBtns = document.querySelectorAll('.buildingClose')
 
 //GET ELEMENT BY ID VARIABLES
 const loadBtn = document.getElementById('loadButton')
@@ -48,7 +50,11 @@ const crowdBar = document.getElementById('crowd')
 const playerActions = document.getElementById('playerActionsContainer')
 const leaveBattleBtn = document.getElementById('leaveBattle')
 const townScreen = document.getElementById('townScreen')
-
+const buildingsContainer = document.getElementById('buildingsContainer')
+const enterArenaScreen = document.getElementById('arenaInterface')
+const enterInnScreen = document.getElementById('innInterface')
+const weaponsmithScreen = document.getElementById('weaponsmithInterface')
+const armorerScreen = document.getElementById('armorerInterface')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
@@ -926,7 +932,7 @@ genericModal.addEventListener('click', (event) => {
 })
 
 endCutsceneBtn.addEventListener('click', (event) => {
-    // if (endCutsceneBtn.style.opacity >= 1) {
+    if (endCutsceneBtn.style.opacity >= 1) {
         pauseSound(cutsceneMusic)
         playSound(activeCutscene.postCutsceneMusic)
         nextScreen = activeCutscene.postCutsceneScreen
@@ -935,7 +941,7 @@ endCutsceneBtn.addEventListener('click', (event) => {
             startBattle()
             toggleScreen('none', arenaBG.imgURL, arenaBG.displayStyle)
         }
-    // }
+    }
 })
 
 allActionBtns.forEach(button => {
@@ -963,4 +969,32 @@ allActionBtns.forEach(button => {
 
 leaveBattleBtn.addEventListener('click', (event) => {
     leaveBattle()
+})
+
+townOpenBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        let buttonID = button.getAttribute('id')
+        if (townInterfaceOpen === false) {
+            if (buttonID === 'arena') {enterArenaScreen.style.display = 'flex'}
+            else if (buttonID === 'inn') {enterInnScreen.style.display = 'flex'}
+            else if (buttonID === 'weaponsmith') {weaponsmithScreen.style.display = 'flex'}
+            else if (buttonID === 'armorer') {armorerScreen.style.display = 'flex'}
+            townInterfaceOpen = true
+            buildingsContainer.style.display = 'none'
+        }
+    })
+})
+
+townCloseBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        let buttonID = button.getAttribute('id')
+        if (townInterfaceOpen === true) {
+            if (buttonID === 'closeArena') {enterArenaScreen.style.display = 'none'}
+            else if (buttonID === 'closeInn') {enterInnScreen.style.display = 'none'}
+            else if (buttonID === 'closeWeaponsmith') {weaponsmithScreen.style.display = 'none'}
+            else if (buttonID === 'closeArmorer') {armorerScreen.style.display = 'none'}
+            townInterfaceOpen = false
+            buildingsContainer.style.display = 'flex'
+        }
+    })
 })

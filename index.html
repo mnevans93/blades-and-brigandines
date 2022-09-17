@@ -196,29 +196,34 @@
         <div id="townScreen">
             <div id="buildingsContainer">
                 <h1>The Town</h1>
-                <button id="arena">Enter the Arena</button><br>
-                <button id="inn">Go to Stone's Throw Inn</button><br>
-                <button id="weaponsmith">Visit the Weaponsmith</button><br>
-                <button id="armorer">Visit the Armorer</button>
+                <button class="buildingOpen" id="arena">Enter the Arena</button><br>
+                <button class="buildingOpen" id="inn">Go to Stone's Throw Inn</button><br>
+                <button class="buildingOpen" id="weaponsmith">Visit the Weaponsmith</button><br>
+                <button class="buildingOpen" id="armorer">Visit the Armorer</button>
             </div>
             <div class="buildingInterface" id="arenaInterface">
                 <h1 class="buildingName">The Arena</h1>
+                <h2 class="buildingDesc">The world-famous Arena where folks from all walks of life come to spectate battles between gladiators.</h2>
                 <!-- stuff goes here -->
+                <button class="buildingClose" id="closeArena">Return to town</button>
             </div>
             <div class="buildingInterface" id="innInterface">
                 <h1 class="buildingName">Stone's Throw Inn</h1>
                 <h2 class="buildingDesc">So named for its distance from the Arena.</h2>
                 <!-- stuff goes here -->
+                <button class="buildingClose" id="closeInn">Return to town</button>
             </div>
             <div class="buildingInterface" id="weaponsmithInterface">
                 <h1 class="buildingName">Phoenix Forge Weapons</h1>
                 <h2 class="buildingDesc">Well-made weaponry purpose built to send your foes to the afterlife.</h2>
                 <!-- stuff goes here -->
+                <button class="buildingClose" id="closeWeaponsmith">Return to town</button>
             </div>
-            <div class="buildingInterface" id="armorsmithInterface">
-                <h1 class="buildingName"></h1>
-                <h2 class="buildingDesc"></h2>
+            <div class="buildingInterface" id="armorerInterface">
+                <h1 class="buildingName">Divine Aegis Armory</h1>
+                <h2 class="buildingDesc">Sturdy armor to help keep you alive in the arena.</h2>
                 <!-- stuff goes here -->
+                <button class="buildingClose" id="closeArmorer">Return to town</button>
             </div>
         </div>
     </body>

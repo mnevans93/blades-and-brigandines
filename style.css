@@ -14,7 +14,9 @@
 }
 
 body {
-    background-image: var(--game-background-image);
+    /* background-image: var(--game-background-image); */
+    background-image: var(--town-background-image); /* get rid of this when done making town screen */
+    background-size: cover;
     font-family: 'DotGothic16', sans-serif;
     color: var(--text-and-border);
     letter-spacing: 1px;
@@ -50,6 +52,7 @@ button:active {
 }
 
 #loadButton {
+    display: none; /* get rid of this when done making town screen */
     position: absolute;
     top: 50%; right: 50%;
     transform: translate(50%,-50%);
@@ -350,17 +353,11 @@ th, td {
 }
 
 #townScreen {
-    display: none;
-    position: fixed;
-    background-size: cover;
-    flex-direction: row;
-    justify-content: space-between;
+    display: flex; /* change this back to none when done making town screen */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
-    margin: 0;
 }
 
 #buildingsContainer, .buildingInterface {
@@ -368,12 +365,15 @@ th, td {
     background-color: var(--image-overlay-container-background);
     flex-direction: column;
     justify-content: space-evenly;
-    height: 50%;
-    width: 45%;
+    width: 80%;
     align-items: center;
     padding: 10px 20px 10px 20px;
     border-radius: 25px;
     margin: 1%;
+}
+
+.buildingInterface {
+    display: none;
 }
 
 #buildingsContainer > h1, .buildingInterface > h1 {
@@ -385,11 +385,8 @@ th, td {
     margin-top: 0.5%;
 }
 
-#buildingsContainer > button {
+.buildingOpen, .buildingClose {
     width: 40%;
-    font-size: 1em;
-}
-
-.buildingInterface {
-    display: none;
+    font-size: 1.5em;
+    margin: 2%;
 }
