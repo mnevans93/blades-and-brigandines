@@ -49,6 +49,7 @@ const playerActions = document.getElementById('playerActionsContainer')
 const leaveBattleBtn = document.getElementById('leaveBattle')
 const townScreen = document.getElementById('townScreen')
 
+
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
 let playerCanChangeStats = true
@@ -61,6 +62,7 @@ let battleRound = 1
 let enemyTurn = false
 let leaveBattleBtnBehavior = ''
 let storyPhase = 0
+let townInterfaceOpen = false
 
 //
 //
@@ -70,11 +72,26 @@ let storyPhase = 0
 //
 //
 
+class Background {
+    constructor(imgURL, displayStyle) {
+        this.imgURL = imgURL
+        this.displayStyle = displayStyle
+    }
+}
+
+const backgrounds = [
+    mainBG = new Background(`var(--game-background-image)`, 'auto'),
+    outsideArenaBG = new Background(`var(--arena-outside-image)`, 'cover'),
+    arenaBG = new Background(`var(--arena-background-image)`, 'cover'),
+    townBG = new Background(`var(--town-background-image)`, 'cover')
+]
+
 class Cutscene {
-    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic) {
+    constructor(firstElText, secondElText, thirdElText, fourthElText, buttonText, postCutsceneScreen, postCutsceneMusic, postCutsceneBattle) {
         this.cutsceneText = [firstElText, secondElText, thirdElText, fourthElText, buttonText]
         this.postCutsceneScreen = postCutsceneScreen
         this.postCutsceneMusic = postCutsceneMusic
+        this.postCutsceneBattle = postCutsceneBattle
     }
 
     renderCutscene() {
@@ -600,7 +617,7 @@ class Gladiator {
     }
 
     debuffHandler() {
-        if (this.debuffClear >= battleRound) {
+        if (this.debuffClear <= battleRound) {
             this.debuff = 'NONE'
             this.debuffClear = null
         }
@@ -728,7 +745,7 @@ function renderStats() {
     })
 }
 
-function toggleScreen(fadeType) {
+function toggleScreen(fadeType, newBackgroundImg, newBackgroundSize) {
     if (fadeType === 'none') {
         if (currentScreen != null) {currentScreen.style.display = 'none'} 
         nextScreen.style.display = 'flex'
@@ -739,6 +756,8 @@ function toggleScreen(fadeType) {
     // NOT CURRENTLY USING FADE OUT
     // }
     currentScreen = nextScreen
+    if (newBackgroundImg != null) {document.body.style.backgroundImage = newBackgroundImg}
+    if (newBackgroundSize != null) {document.body.style.backgroundSize = newBackgroundSize}
 }
 
 function displayGenericModal(modalText) {
@@ -797,11 +816,11 @@ function endBattle(didPlayerWin) {
 
 function leaveBattle() {
     if (leaveBattleBtnBehavior.constructor.name === 'Cutscene') {
-        toggleScreen('none')
+        toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         leaveBattleBtnBehavior.renderCutscene()
     } else {
         nextScreen = townScreen
-        toggleScreen('none')
+        toggleScreen('none', townBG.imgURL, townBG.displayStyle)
     }
 }
 
@@ -827,7 +846,7 @@ loadBtn.addEventListener('click', (event) => {
     loadBtn.style.display = 'none'
     playSound(startMusic)
     nextScreen = startScreen
-    toggleScreen('fadeIn')
+    toggleScreen('fadeIn', outsideArenaBG.imgURL, outsideArenaBG.displayStyle)
 })
 
 howToPlayBtn.addEventListener('click', (event) => {
@@ -869,7 +888,7 @@ startGameBtn.addEventListener('click', (event) => {
         span.textContent = playerGladiator.gladiatorName
     })
     nextScreen = characterStatScreen
-    toggleScreen('none')
+    toggleScreen('none', null, null)
 })
 
 allStatDecrementers.forEach(button => {
@@ -889,7 +908,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         playerCanChangeStats = false
         pauseSound(startMusic)
         nextScreen = cutsceneContainer
-        toggleScreen('none')
+        toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         introCutscene.renderCutscene()
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
@@ -899,7 +918,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
 
 characterStatBackBtn.addEventListener('click', (event) => {
     nextScreen = startScreen
-    toggleScreen('none')
+    toggleScreen('none', null, null)
 })
 
 genericModal.addEventListener('click', (event) => {
@@ -907,13 +926,16 @@ genericModal.addEventListener('click', (event) => {
 })
 
 endCutsceneBtn.addEventListener('click', (event) => {
-    if (endCutsceneBtn.style.opacity >= 1) {
+    // if (endCutsceneBtn.style.opacity >= 1) {
         pauseSound(cutsceneMusic)
         playSound(activeCutscene.postCutsceneMusic)
         nextScreen = activeCutscene.postCutsceneScreen
-        if (postCutsceneBattle === true) {startBattle()}
-        toggleScreen('none')
-    }
+        toggleScreen('none', townBG.imgURL, townBG.displayStyle)
+        if (activeCutscene.postCutsceneBattle === true) {
+            startBattle()
+            toggleScreen('none', arenaBG.imgURL, arenaBG.displayStyle)
+        }
+    // }
 })
 
 allActionBtns.forEach(button => {
@@ -931,6 +953,8 @@ allActionBtns.forEach(button => {
             if (playerTookNoAction === false && enemyGladiator.health > 0) {
                 progressBattle()
             } else if (enemyGladiator.health <= 0) {
+                enemyTurn = true
+                playerActions.style.opacity = 0
                 endBattle(true)
             }
         } 

@@ -11,13 +11,6 @@
 Hi there! I'm Matthias Nevans, and thanks for checking out this repository for *Blades and Brigandines*. As the heading suggests, I was heavily inspired to create this game by *Swords and Sandals*, and I saw an opportunity to do my own spin on those games I love so much as my first major project for the General Assembly Software Engineering Immersive bootcamp.
 
 ### Game Mechanics ###
-
-<center>
-
-![crossed swords](Images/stat%20screen.PNG)
-
-</center>
-
 If you've never played a *Swords and Sandals* game before, they are gladiator-style turn-based RPG's. *Blades and Brigandines* follows a very similar structure for game mechanics, but the implementation is quite a bit different since it is built with HTML, CSS, and JS instead of Flash :skull: You will create a gladiator and assign stat points to any of the six stats: Strength, Attack, Defense, Vitality, Stamina, and Charisma. As you win fights, you gain experience and gold, which are used to level up your gladiator and buy new gear respectively. If you are familiar with RPG's, this should all sound pretty familiar! This is a roguelike take on the game as well; there are no saves, and death is final - that is, unless I add in save/load functionality later :sweat_smile:
 
 ### Project Overview ###
@@ -25,21 +18,9 @@ When approaching this project, I wanted to emulate most of the mechanics and sys
 
 ### Visuals ###
 
-<center>
-
-![crossed swords](Images/cutscene%20example.PNG)
-
-</center>
-
 I can't take full credit for the background and color selections since I had a wonderful friend with visual design talents to assist me on that front; however, I did spend far more time than I would have liked to on building the HTML and CSS to create the different containers I needed, such as the Start Screen, the Character Creation Screen, the Cutscene Screen, etc. The game tracks the current screen using global variables, and whenever a screen transition is required, these variables are updated accordingly to seamlessly toggle the displayed screen, each represented by a unique container within the HTML. Prompts, such as the player not having enough energy to do something in combat, are handled using a generic modal that can be called from anywhere and can be easily dismissed. Shop screens, player status, and player inventory screens are also included for some additional functionality.
 
 ### JavaScript ###
-
-<center>
-
-![crossed swords](Images/battle%20screen.PNG)
-
-</center>
 
 The majority of my time was spent writing JS for this project and trying to make it as DRY as possible. As previously mentioned, I made heavy use of object-oriented programming to handle many aspects of the game. The JS is grouped by Global Variables, then Classes and Object declarations, followed by generic functions, and lastly all the event listeners. This (hopefully) makes the code a bit easier to follow and read through. The bulk of the code is in the Classes and Object declaration section. Fun fact, the renderCutscene method on the **Cutscene** class utilizes promise chaining because why not learn about that at 10pm on a weekday from my software engineer friend? I could have achieved the same result using staggered setTimeouts, but that wouldn't have been as educational :sweat_smile:
 

@@ -3,13 +3,14 @@
 :root {
     --game-background-image: url('Images/mainBackground.jfif');
     --textbox-and-cutscene-background-image: url('Images/textboxBackground.jpg');
+    --arena-outside-image: url('Images/arenaOutside.png');
     --arena-background-image: url('Images/arenaBackground.jpg');
     --town-background-image: url('Images/townBackground.jpg');
     --arena-outside-background-image: url('Images/arena outside.png');
     --text-and-border: rgb(202, 37, 37);
     --on-hover: white;
     --modal-background: rgba(65, 54, 40, 0.9);
-    --town-container-background: rgba(0, 0, 0, 0.8);
+    --image-overlay-container-background: rgba(0, 0, 0, 0.8);
 }
 
 body {
@@ -250,33 +251,16 @@ th, td {
     height: 100%;
     left: 0;
     top: 0;
-    background-image: var(--arena-background-image);
-    background-size: cover;
     flex-direction: row;
     justify-content: space-between;
     margin: auto;
     text-align: center;
 }
 
-#crowdContainer {
-    background-image: var(--textbox-and-cutscene-background-image);
-    height: 5%;
-    width: var(100% - 4px);
-    border: solid white 2px;
-    border-radius: 25px;
-}
-
-#crowd {
-    background-color: var(--text-and-border);
-    color: white;
-    width: 10%;
-    border-radius: 25px;
-}
-
 #playerBattle, #enemyBattle {
     display: flex;
     flex-direction: column;
-    background-image: var(--textbox-and-cutscene-background-image);
+    background-color: var(--image-overlay-container-background);
     margin: 2%;
     width: 45%;
     height: fit-content;
@@ -333,13 +317,28 @@ th, td {
 }
 
 #battleMessagesContainer {
-    background-image: var(--textbox-and-cutscene-background-image);
+    background-color: var(--image-overlay-container-background);
     position: fixed;
     text-align: center;
     justify-content: center;
     bottom: 25px;
     left: 2%;
     right: 2%;
+    border-radius: 25px;
+}
+
+#crowdContainer {
+    background-color: var(--image-overlay-container-background);
+    height: 5%;
+    width: var(100% - 4px);
+    border: solid white 2px;
+    border-radius: 25px;
+}
+
+#crowd {
+    background-color: var(--text-and-border);
+    color: white;
+    width: 10%;
     border-radius: 25px;
 }
 
@@ -353,7 +352,6 @@ th, td {
 #townScreen {
     display: none;
     position: fixed;
-    background-image: var(--town-background-image);
     background-size: cover;
     flex-direction: row;
     justify-content: space-between;
@@ -367,7 +365,7 @@ th, td {
 
 #buildingsContainer, .buildingInterface {
     display: flex;
-    background-color: var(--town-container-background);
+    background-color: var(--image-overlay-container-background);
     flex-direction: column;
     justify-content: space-evenly;
     height: 50%;
@@ -379,7 +377,7 @@ th, td {
 }
 
 #buildingsContainer > h1, .buildingInterface > h1 {
-    background-image: var(--textbox-and-cutscene-background-image);
+    background-image: var(--image-overlay-container-background);
     padding: 10px 20px 10px 20px;
     border-radius: 25px;
     width: 80%;
@@ -390,4 +388,8 @@ th, td {
 #buildingsContainer > button {
     width: 40%;
     font-size: 1em;
+}
+
+.buildingInterface {
+    display: none;
 }
