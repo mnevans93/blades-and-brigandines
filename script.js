@@ -7,7 +7,7 @@ startMusic.loop = true
 const cutsceneMusic = new Audio('Audio/anxiety.mp3')
 cutsceneMusic.loop = true
 const battleMusic = new Audio('Audio/stopWar.mp3')
-battleMusic.volume = 0.15
+battleMusic.volume = 0.175
 battleMusic.loop = true
 const townMusic = new Audio('Audio/aStarlessNight.mp3')
 townMusic.loop = true
@@ -76,15 +76,10 @@ class Cutscene {
         this.postCutsceneMusic = postCutsceneMusic
     }
 
-    fillCutsceneText = () => {
-        for (let index = 0; index < cutsceneElements.length; index++) {
-            cutsceneElements[index].textContent = this.cutsceneText[index]
-        }
-    }
-
     renderCutscene() {
         activeCutscene = this
         playSound(cutsceneMusic)
+        this.resetCutscene()
         this.fillCutsceneText()
         let promise = Promise.resolve()
         for (const element of cutsceneElements) {
@@ -94,6 +89,18 @@ class Cutscene {
                     unfade(element, 50)
                     return delay(2000)
                 })
+        }
+    }
+
+    resetCutscene() {
+        for (const element of cutsceneElements) {
+            element.style.opacity = 0
+        }
+    }
+
+    fillCutsceneText = () => {
+        for (let index = 0; index < cutsceneElements.length; index++) {
+            cutsceneElements[index].textContent = this.cutsceneText[index]
         }
     }
 
@@ -112,12 +119,12 @@ const cutscenes = [
     ),
 
     firstFightDoneCutscene = new Cutscene(
-        firstElText = ``,
-        secondElText = ``,
-        thirdElText = ``,
-        fourthElText = ``,
-        buttonText = ``,
-        postCutsceneScreen = ``,
+        firstElText = `Your heartbeat begins to slow as your opponent's stops. The battle is done. You steady yourself, trying to catch your breath.`,
+        secondElText = `You straighten your posture and strap your weapon to your waist before looking around at the crowd.`,
+        thirdElText = `You count no more than a few dozen spectators. A paltry attendance, but you expected nothing more.`,
+        fourthElText = `Before long, these seats will be full of people shouting your name. You resolve to make this a reality, no matter what it takes.`,
+        buttonText = `A journey of a thousand miles begins with a single step.`,
+        postCutsceneScreen = townScreen,
         postCutsceneMusic = townMusic,
         postCutsceneBattle = false
     ),
@@ -722,10 +729,10 @@ function renderStats() {
 
 function toggleScreen(fadeType) {
     if (fadeType === 'none') {
-        if (currentScreen != null) { currentScreen.style.display = 'none'} 
+        if (currentScreen != null) {currentScreen.style.display = 'none'} 
         nextScreen.style.display = 'flex'
     } else if (fadeType === 'fadeIn') {
-        if (currentScreen != null) { currentScreen.style.display = 'none'} 
+        if (currentScreen != null) {currentScreen.style.display = 'none'} 
         unfade(nextScreen, 100)
     } // else if(fadeType === 'fadeOut') {
     // NOT CURRENTLY USING FADE OUT
@@ -775,7 +782,8 @@ function endBattle(didPlayerWin) {
     if (didPlayerWin === true) {
         battleEndMsg.generateBattleMessage(playerGladiator, 'success')
         if (storyPhase === 0) {
-            firstFightDoneCutscene.renderCutscene()
+            leaveBattleBtnBehavior = firstFightDoneCutscene
+            nextScreen = cutsceneContainer
             storyPhase = 1
         } else {
             leaveBattleBtnBehavior = null
@@ -787,7 +795,8 @@ function endBattle(didPlayerWin) {
 }
 
 function leaveBattle() {
-    if (leaveBattleBtnBehavior === Cutscene) {
+    if (leaveBattleBtnBehavior.constructor.name === 'Cutscene') {
+        toggleScreen('none')
         leaveBattleBtnBehavior.renderCutscene()
     } else {
         nextScreen = townScreen
@@ -804,9 +813,13 @@ function leaveBattle() {
 //
 
 allButtons.forEach(button => {
+    if (button != endCutsceneBtn) {
     button.addEventListener('click', (event) => {
         playSound(simpleClick)
     })
+    } else if (endCutsceneBtn.style.opacity >= 1) {
+        playSound(simpleClick)
+    }
 })
 
 loadBtn.addEventListener('click', (event) => {
@@ -893,11 +906,13 @@ genericModal.addEventListener('click', (event) => {
 })
 
 endCutsceneBtn.addEventListener('click', (event) => {
-    pauseSound(cutsceneMusic)
-    playSound(activeCutscene.postCutsceneMusic)
-    nextScreen = activeCutscene.postCutsceneScreen
-    if (postCutsceneBattle === true) {startBattle()}
-    toggleScreen('none')
+    if (endCutsceneBtn.style.opacity >= 1) {
+        pauseSound(cutsceneMusic)
+        playSound(activeCutscene.postCutsceneMusic)
+        nextScreen = activeCutscene.postCutsceneScreen
+        if (postCutsceneBattle === true) {startBattle()}
+        toggleScreen('none')
+    }
 })
 
 allActionBtns.forEach(button => {
