@@ -293,9 +293,10 @@ const allDebuffs = [
 ]
 
 class Equipment {
-    constructor(itemName, description, price, purchased, equipped) {
+    constructor(itemName, description, basePrice, price, purchased, equipped) {
         this.itemName = itemName
         this.description = description
+        this.basePrice = basePrice
         this.price = price
         this.purchased = purchased
         this.equipped = equipped
@@ -313,11 +314,16 @@ class Equipment {
         }
     }
 
+    calcPrice() {
+        let discount = 1 - playerGladiator.charisma * 0.05
+        this.price = this.basePrice * discount
+    }
+
 }
 
 class Weapon extends Equipment {
-    constructor(itemName, description, price, purchased, equipped, minDamage, maxDamage) {
-        super(itemName, description, price, purchased, equipped)
+    constructor(itemName, description, basePrice, price, purchased, equipped, minDamage, maxDamage) {
+        super(itemName, description, basePrice, price, purchased, equipped)
         this.minDamage = minDamage
         this.maxDamage = maxDamage
         this.damageRange = maxDamage - minDamage
@@ -325,26 +331,26 @@ class Weapon extends Equipment {
 }
 
 const allWeapons = [
-    rustyBlade = new Weapon('Rusty Blade', `Not much of a weapon, but it'll have to do for now.`, 0, true, true, 1, 5),
-    serratedKnife = new Weapon('Serrated Knife', `Sharper than what you started with, but... isn't this just a steak knife?`, 100, false, false, 5, 10),
-    shortsword = new Weapon('Shortsword', `Finally, a real weapon.`, 250, false, false, 10, 20),
-    longsword = new Weapon('Longsword', `This blade has some real heft to it. This will do nicely...`, 1000, false, false, 20, 35),
-    broadsword = new Weapon('Broadsword', `Deadly sharp, easy to handle. Your enemies won't know what cut them.`, 2500, false, false, 35, 50)
+    rustyBlade = new Weapon('Rusty Blade', `Not much of a weapon, but it'll have to do for now.`, 0, 0, true, true, 1, 5),
+    serratedKnife = new Weapon('Serrated Knife', `Sharper than what you started with, but... isn't this just a steak knife?`, 100, 100, false, false, 5, 10),
+    shortsword = new Weapon('Shortsword', `Finally, a real weapon.`, 250, 250, false, false, 10, 20),
+    longsword = new Weapon('Longsword', `This blade has some real heft to it. This will do nicely...`, 1000, 1000, false, false, 20, 35),
+    broadsword = new Weapon('Broadsword', `Deadly sharp, easy to handle. Your enemies won't know what cut them.`, 2500, 1000, false, false, 35, 50)
 ] 
 
 class Armor extends Equipment {
-    constructor(itemName, description, price, purchased, equipped, armorBonus) {
-        super(itemName, description, price, purchased, equipped)
+    constructor(itemName, description, basePrice, price, purchased, equipped, armorBonus) {
+        super(itemName, description, basePrice, price, purchased, equipped)
         this.armorBonus = armorBonus
     }
 }
 
 const allArmor = [
-    plainClothing = new Armor('Plain Clothing', `Doesn't protect you at all. It's pretty cut up already, too...`, 0, true, true, 0),
-    hideArmor = new Armor('Hide Armor', `Stitched together hides that only cover major vital points. Better than nothing.`, 250, false, false, 25),
-    paddedArmor = new Armor('Padded Armor', `Covers just about everything important, but it's not terribly sturdy.`, 1000, false, false, 50),
-    leatherArmor = new Armor('Leather Armor', `Well-fitted and fairly durable. This might just keep you alive.`, 2500, false, false, 100),
-    brigandine = new Armor('Brigandine', `This looks very well-made. Very sturdy, too. It should turn quite a few blades.`, 5000, false, false, 200)
+    plainClothing = new Armor('Plain Clothing', `Doesn't protect you at all. It's pretty cut up already, too...`, 0, 0, true, true, 0),
+    hideArmor = new Armor('Hide Armor', `Stitched together hides that only cover major vital points. Better than nothing.`, 250, 250, false, false, 25),
+    paddedArmor = new Armor('Padded Armor', `Covers just about everything important, but it's not terribly sturdy.`, 1000, 1000, false, false, 50),
+    leatherArmor = new Armor('Leather Armor', `Well-fitted and fairly durable. This might just keep you alive.`, 2500, 2500, false, false, 100),
+    brigandine = new Armor('Brigandine', `This looks very well-made. Very sturdy, too. It should turn quite a few blades.`, 5000, 5000, false, false, 200)
 ]
 
 class Gladiator {
@@ -458,11 +464,13 @@ class Gladiator {
         displayGenericModal(inventoryDisplay, false, false)
 
         document.getElementById('closeGenericModal').addEventListener('click', (event) => {
+            playSound(simpleClick)
             genericModal.style.display = 'none'
         })
 
         document.querySelectorAll('.inventoryEquip').forEach(button => {
             button.addEventListener('click', (event) => {
+                playSound(simpleClick)
                 let itemName = button.getAttribute('id')
                 let itemType = button.getAttribute('type')
                 let itemObj = ''
@@ -509,6 +517,7 @@ class Gladiator {
         let weaponsmithDisplay = `Your Gold: ${this.gold}<br><br>`
         allWeapons.forEach(weapon => {
             if (weapon.purchased != true) {
+                weapon.calcPrice()
                 weaponsmithDisplay += `${weapon.itemName} | ${weapon.minDamage} to ${weapon.maxDamage} Base Damage | Gold Cost: ${weapon.price} | <button class="purchase" id="${weapon.itemName}">PURCHASE</button><br>
                 ${weapon.description}<br><br>`
             }
@@ -518,6 +527,7 @@ class Gladiator {
 
         document.querySelectorAll('.purchase').forEach(button => {
             button.addEventListener('click', (event) => {
+                playSound(simpleClick)
                 let itemName = button.getAttribute('id')
                 let itemObj = ''
                 for (const weapon in allWeapons) {
@@ -534,6 +544,7 @@ class Gladiator {
         let armorerDisplay = `Your Gold: ${this.gold}<br><br>`
         allArmor.forEach(armor => {
             if (armor.purchased != true) {
+                armor.calcPrice()
                 armorerDisplay += `${armor.itemName} | ${armor.armorBonus} Base Armor | Gold Cost: ${armor.price} | <button class="purchase" id="${armor.itemName}">PURCHASE</button><br>
                 ${armor.description}<br><br>`
             }
@@ -543,6 +554,7 @@ class Gladiator {
 
         document.querySelectorAll('.purchase').forEach(button => {
             button.addEventListener('click', (event) => {
+                playSound(simpleClick)
                 let itemName = button.getAttribute('id')
                 let itemObj = ''
                 for (const armor in allArmor) {
@@ -946,7 +958,6 @@ function endBattle(didPlayerWin) {
     setTimeout(() => {
         leaveBattleBtn.style.display = 'flex'
     }, 3000)
-    pauseSound(battleMusic)
     if (didPlayerWin === true) {
         battleEndMsg.generateBattleMessage(playerGladiator, 'success')
         playerGladiator.getRewards(enemyGladiator.experienceReward, enemyGladiator.goldReward)
@@ -964,6 +975,7 @@ function endBattle(didPlayerWin) {
 }
 
 function leaveBattle() {
+    pauseSound(battleMusic)
     if (leaveBattleBtnBehavior.constructor.name === 'Cutscene') {
         toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         leaveBattleBtnBehavior.renderCutscene()
