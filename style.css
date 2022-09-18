@@ -20,6 +20,10 @@ body {
     letter-spacing: 1px;
 }
 
+hr {
+    border-color: var(--text-and-border)
+}
+
 p {
     font-size: 1.25em;
     line-height: 110%;
@@ -50,6 +54,7 @@ button:active {
 }
 
 #loadButton {
+    /* display: none; */
     position: absolute;
     top: 50%; right: 50%;
     transform: translate(50%,-50%);
@@ -112,7 +117,7 @@ button:active {
     width: 300px;
 }
 
-#howToPlayModal, #genericModal {
+#howToPlayModal, #genericModal, #charAndShopModal {
     background-color: var(--modal-background);
     position: fixed;
     top: 0;
@@ -207,7 +212,7 @@ th, td {
 
 #genericModalTextbox {
     background-image: var(--textbox-and-cutscene-background-image);
-    width: 50%;
+    width: 75%;
 	border-radius: 25px;
 	margin: auto;
 	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
@@ -362,7 +367,7 @@ th, td {
     background-color: var(--image-overlay-container-background);
     flex-direction: column;
     justify-content: space-evenly;
-    width: 80%;
+    width: 90%;
     align-items: center;
     padding: 10px 20px 10px 20px;
     border-radius: 25px;
@@ -377,12 +382,16 @@ th, td {
     background-image: var(--image-overlay-container-background);
     padding: 10px 20px 10px 20px;
     border-radius: 25px;
-    width: 80%;
     font-size: 2em;
-    margin-top: 0.5%;
+    margin: 1%;
 }
 
-.buildingOpen, .buildingClose {
+.buildingInterface > h2 {
+    margin: 1%;
+    font-size: 1.25em;
+}
+
+.buildingOpen, .buildingClose, .characterBtn {
     width: 40%;
     font-size: 1.5em;
     margin: 2%;

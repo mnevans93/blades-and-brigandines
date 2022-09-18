@@ -53,8 +53,12 @@ const townScreen = document.getElementById('townScreen')
 const buildingsContainer = document.getElementById('buildingsContainer')
 const enterArenaScreen = document.getElementById('arenaInterface')
 const enterInnScreen = document.getElementById('innInterface')
+const openInventoryBtn = document.getElementById('openInventory')
+const openOverviewBtn = document.getElementById('openCharOverview')
 const weaponsmithScreen = document.getElementById('weaponsmithInterface')
+const weaponsmithTextEl = document.getElementById('weaponsmithText')
 const armorerScreen = document.getElementById('armorerInterface')
+const armorerTextEl = document.getElementById('armorerText')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
@@ -62,6 +66,7 @@ let playerCanChangeStats = true
 let currentScreen = null
 let nextScreen = startScreen
 let isPlayerLevelingUp = false
+let easyDismissGlobal = true
 let activeCutscene = null
 let crowdBarPercentage = 0.1
 let battleRound = 1
@@ -146,7 +151,7 @@ const cutscenes = [
         firstElText = `Your heartbeat begins to slow as your opponent's stops. The battle is done. You steady yourself, trying to catch your breath.`,
         secondElText = `You straighten your posture and strap your weapon to your waist before looking around at the crowd.`,
         thirdElText = `You count no more than a few dozen spectators. A paltry attendance, but you expected nothing more.`,
-        fourthElText = `Before long, these seats will be full of people shouting your name. You resolve to make this a reality, no matter what it takes.`,
+        fourthElText = `Before long, these seats will be full of people chanting your name. You resolve to make this a reality, no matter what it takes.`,
         buttonText = `A journey of a thousand miles begins with a single step.`,
         postCutsceneScreen = townScreen,
         postCutsceneMusic = townMusic,
@@ -297,11 +302,17 @@ class Equipment {
     }
 
     buyEquipment() {
-        //check if player has enough gold to add item to their inventory
-            //call generic modal if they do not have enough gold and return
-        //else subtract price from player's gold, set purchased to true so it can show 
-        //give player option to equip after purchasing or prompt to equip in inventory
+        if (this.price > playerGladiator.gold) {
+            displayGenericModal(`You cannot afford this item. Don't waste my time.`, true, true)
+            return false
+        } else {
+            playerGladiator.gold -= this.price
+            this.purchased = true
+            displayGenericModal(`You purchased the ${this.itemName}. Visit the Inn to equip it.`, true, true)
+            return true
+        }
     }
+
 }
 
 class Weapon extends Equipment {
@@ -407,10 +418,9 @@ class Gladiator {
         this.gold += Math.round((goldReward * (1 + crowdBarPercentage)))
         this.defeatedOpponents += 1
         setTimeout(() => {
-            displayGenericModal(`
-            You earned ${expReward} experience and ${Math.round(goldReward * (1 + crowdBarPercentage))} gold from your victory.
+            displayGenericModal(`You earned ${expReward} experience and ${Math.round(goldReward * (1 + crowdBarPercentage))} gold from your victory.<br>
             You have ${this.levelUps[this.level] - this.experience} experience remaining until next level.
-            `)
+            `, false, true)
         }, 3000)
         if (this.experience >= this.levelUps[this.level]) {
             this.levelUp()
@@ -425,13 +435,133 @@ class Gladiator {
         //not finished
     }
 
+    generateInventory() {
+        let inventoryDisplay = `<b>Equipped Weapon: ${playerGladiator.weapon.itemName} - ${playerGladiator.weapon.minDamage} to ${playerGladiator.weapon.maxDamage} Base Damage</b><br>
+        ${playerGladiator.weapon.description}<br><br>
+        Equipped Armor: ${playerGladiator.armor.itemName} - ${playerGladiator.armor.armorBonus} Base Armor<br>
+        ${playerGladiator.armor.description}<br><br>
+        Purchased Equipment:<br>`
+
+        allWeapons.forEach(weapon => {
+            if (weapon.purchased === true && weapon.equipped === false) {
+                inventoryDisplay += `${weapon.itemName} - <button class="inventoryEquip" type="weapon" id="${weapon.itemName}">EQUIP</button><br>`
+            }
+        })
+        allArmor.forEach(armor => {
+            if (armor.purchased === true && armor.equipped === false) {
+                inventoryDisplay += `${armor.itemName} - <button class="inventoryEquip" type="armor" id="${armor.itemName}">EQUIP</button><br>`
+            }
+        })
+
+        inventoryDisplay += `<br><button id="closeGenericModal">CLOSE</button>`
+
+        displayGenericModal(inventoryDisplay, false, false)
+
+        document.getElementById('closeGenericModal').addEventListener('click', (event) => {
+            genericModal.style.display = 'none'
+        })
+
+        document.querySelectorAll('.inventoryEquip').forEach(button => {
+            button.addEventListener('click', (event) => {
+                let itemName = button.getAttribute('id')
+                let itemType = button.getAttribute('type')
+                let itemObj = ''
+                if (itemType === 'weapon') {
+                    for (const weapon in allWeapons) {
+                        if (itemName === allWeapons[weapon].itemName) {
+                            itemObj = allWeapons[weapon]
+                        }
+                    }
+                } else {
+                    for (const armor in allArmor) {
+                        if (itemName === allArmor[armor].itemName) {
+                            itemObj = allArmor[armor]
+                        }
+                    }
+                }
+                this.changeEquipment(itemObj)
+                this.generateInventory()
+            })
+        })
+    }
+
+    generateOverview() {
+        displayGenericModal(
+            `
+            ${this.gladiatorName}<br>
+            Level ${this.level} Gladiator<br>
+            HP: ${this.maxHealth} / Energy: ${this.maxEnergy}<br><br>
+            Strength: ${this.strength}<br>
+            Attack: ${this.attack}<br>
+            Defense: ${this.defense}<br>
+            Vitality: ${this.vitality}<br>
+            Stamina: ${this.stamina}<br>
+            Charisma: ${this.charisma}<br><br>
+            Experience: ${this.experience}<br>
+            Next Level: ${this.levelUps[this.level]}<br><br>
+            Total Gold: ${this.gold}<br><br>
+            Opponents Defeated: ${this.defeatedOpponents}
+            `
+        , false, true)
+    }
+
+    generateWeaponsmith() {
+        let weaponsmithDisplay = `Your Gold: ${this.gold}<br><br>`
+        allWeapons.forEach(weapon => {
+            if (weapon.purchased != true) {
+                weaponsmithDisplay += `${weapon.itemName} | ${weapon.minDamage} to ${weapon.maxDamage} Base Damage | Gold Cost: ${weapon.price} | <button class="purchase" id="${weapon.itemName}">PURCHASE</button><br>
+                ${weapon.description}<br><br>`
+            }
+        })
+        if (weaponsmithDisplay === `Your Gold: ${this.gold}<br><br>`) {weaponsmithDisplay = 'There is nothing more you can purchase at the moment.'}
+        weaponsmithTextEl.innerHTML = weaponsmithDisplay
+
+        document.querySelectorAll('.purchase').forEach(button => {
+            button.addEventListener('click', (event) => {
+                let itemName = button.getAttribute('id')
+                let itemObj = ''
+                for (const weapon in allWeapons) {
+                    if (itemName === allWeapons[weapon].itemName) {
+                        itemObj = allWeapons[weapon]
+                    }
+                }
+                if (itemObj.buyEquipment() === true) {this.generateWeaponsmith()}
+            })
+        })
+    }
+
+    generateArmorer() {
+        let armorerDisplay = `Your Gold: ${this.gold}<br><br>`
+        allArmor.forEach(armor => {
+            if (armor.purchased != true) {
+                armorerDisplay += `${armor.itemName} | ${armor.armorBonus} Base Armor | Gold Cost: ${armor.price} | <button class="purchase" id="${armor.itemName}">PURCHASE</button><br>
+                ${armor.description}<br><br>`
+            }
+        })
+        if (armorerDisplay === `Your Gold: ${this.gold}<br><br>`) {armorerDisplay = 'There is nothing more you can purchase at the moment.'}
+        armorerTextEl.innerHTML = armorerDisplay
+
+        document.querySelectorAll('.purchase').forEach(button => {
+            button.addEventListener('click', (event) => {
+                let itemName = button.getAttribute('id')
+                let itemObj = ''
+                for (const armor in allArmor) {
+                    if (itemName === allArmor[armor].itemName) {
+                        itemObj = allArmor[armor]
+                    }
+                }
+                if (itemObj.buyEquipment() === true) {this.generateArmorer()}
+            })
+        })
+    }
+
     changeEquipment(itemToEquip) {
         if (itemToEquip.constructor.name === 'Weapon') {
-            this.equippedItems[0].equipped = false
-            this.equippedItems[0] = itemToEquip
-        } else if (item.constructor.name === 'Armor') {
-            this.equippedItems[1].equipped = false
-            this.equippedItems[1] = itemToEquip
+            this.weapon.equipped = false
+            this.weapon = itemToEquip
+        } else if (itemToEquip.constructor.name === 'Armor') {
+            this.armor.equipped = false
+            this.armor = itemToEquip
         }
         itemToEquip.equipped = true
     }
@@ -471,7 +601,7 @@ class Gladiator {
 
     checkEnergy() {
         if (this.energy <= 0) {
-            displayGenericModal('You do not have the energy to perform this action.')
+            displayGenericModal('You do not have the energy to perform this action.', true, true)
             return false
         }
         return true
@@ -614,7 +744,7 @@ class Gladiator {
 
     rest() {
         if (this.energy === this.maxEnergy) {
-            displayGenericModal('Your energy is already full.')
+            displayGenericModal('Your energy is already full.', true, true)
             return true
         }
         this.energy = Math.round(this.energy + this.maxEnergy * 0.5)
@@ -771,8 +901,13 @@ function toggleScreen(fadeType, newBackgroundImg, newBackgroundSize) {
     if (newBackgroundSize != null) {document.body.style.backgroundSize = newBackgroundSize}
 }
 
-function displayGenericModal(modalText) {
-    genericModalTextEl.innerText = modalText
+function displayGenericModal(modalText, plainText, easyDismiss) {
+    if (plainText === true) {
+        genericModalTextEl.innerText = modalText
+    } else {
+        genericModalTextEl.innerHTML = modalText
+    }
+    easyDismissGlobal = easyDismiss
     genericModal.style.display = 'flex'
 }
 
@@ -895,10 +1030,20 @@ townOpenBtns.forEach(button => {
     button.addEventListener('click', (event) => {
         let buttonID = button.getAttribute('id')
         if (townInterfaceOpen === false) {
-            if (buttonID === 'arena') {enterArenaScreen.style.display = 'flex'}
-            else if (buttonID === 'inn') {enterInnScreen.style.display = 'flex'}
-            else if (buttonID === 'weaponsmith') {weaponsmithScreen.style.display = 'flex'}
-            else if (buttonID === 'armorer') {armorerScreen.style.display = 'flex'}
+            if (buttonID === 'arena') {
+                enterArenaScreen.style.display = 'flex'
+            }
+            else if (buttonID === 'inn') {
+                enterInnScreen.style.display = 'flex'
+            }
+            else if (buttonID === 'weaponsmith') {
+                weaponsmithScreen.style.display = 'flex'
+                playerGladiator.generateWeaponsmith()
+            }
+            else if (buttonID === 'armorer') {
+                armorerScreen.style.display = 'flex'
+                playerGladiator.generateArmorer()
+            }
             townInterfaceOpen = true
             buildingsContainer.style.display = 'none'
         }
@@ -952,7 +1097,7 @@ assetsBtn.addEventListener('click', (event) => {
 
     https://uppbeat.io/t/cory-alstad/a-starless-night
     License code: QALBW1UNUAMWRG7F`
-    )
+    , true, true)
 })
 
 startGameBtn.addEventListener('click', (event) => {
@@ -977,7 +1122,7 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         introCutscene.renderCutscene()
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
         //do different stuff when player is leveling up mid-game after a level-up
-    } else {displayGenericModal('You must allocate all stat points before proceeding.')}
+    } else {displayGenericModal('You must allocate all stat points before proceeding.', true, true)}
     playerGladiator.adjustSecondaryStats()
 })
 
@@ -987,11 +1132,11 @@ characterStatBackBtn.addEventListener('click', (event) => {
 })
 
 genericModal.addEventListener('click', (event) => {
-    genericModal.style.display = 'none'
+    if (easyDismissGlobal === true) {genericModal.style.display = 'none'}
 })
 
 endCutsceneBtn.addEventListener('click', (event) => {
-    // if (endCutsceneBtn.style.opacity >= 1) {
+    if (endCutsceneBtn.style.opacity >= 1) {
         pauseSound(cutsceneMusic)
         playSound(activeCutscene.postCutsceneMusic)
         nextScreen = activeCutscene.postCutsceneScreen
@@ -1000,9 +1145,17 @@ endCutsceneBtn.addEventListener('click', (event) => {
             startBattle()
             toggleScreen('none', arenaBG.imgURL, arenaBG.displayStyle)
         }
-    // }
+    }
 })
 
 leaveBattleBtn.addEventListener('click', (event) => {
     leaveBattle()
+})
+
+openInventoryBtn.addEventListener('click', (event) => {
+    playerGladiator.generateInventory()
+})
+
+openOverviewBtn.addEventListener('click', (event) => {
+    playerGladiator.generateOverview()
 })
