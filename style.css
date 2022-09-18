@@ -14,9 +14,7 @@
 }
 
 body {
-    /* background-image: var(--game-background-image); */
-    background-image: var(--town-background-image); /* get rid of this when done making town screen */
-    background-size: cover;
+    background-image: var(--game-background-image);
     font-family: 'DotGothic16', sans-serif;
     color: var(--text-and-border);
     letter-spacing: 1px;
@@ -52,7 +50,6 @@ button:active {
 }
 
 #loadButton {
-    display: none; /* get rid of this when done making town screen */
     position: absolute;
     top: 50%; right: 50%;
     transform: translate(50%,-50%);
@@ -353,7 +350,7 @@ th, td {
 }
 
 #townScreen {
-    display: flex; /* change this back to none when done making town screen */
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;

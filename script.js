@@ -154,11 +154,11 @@ const cutscenes = [
     ),
 
     playerLosesCutscene = new Cutscene(
-        firstElText = ``,
-        secondElText = ``,
-        thirdElText = ``,
-        fourthElText = ``,
-        buttonText = ``,
+        firstElText = `You try to stay standing, but it's useless as your legs fail you. You feel your body begin to fold under your own weight.`,
+        secondElText = `The world swirls around you, your vision blurring and before long, you realize you are lying face down in the sand.`,
+        thirdElText = `This wasn't how it was supposed to go. You feel anger and regret surge through you as you lose physical sensation.`,
+        fourthElText = `Your story should not have ended here. You still had so far left to go. Maybe things will be different in the next life...`,
+        buttonText = `The arena claims another.`,
         postCutsceneScreen = startScreen,
         postCutsceneMusic = startMusic,
         postCutsceneBattle = false
@@ -340,7 +340,7 @@ class Gladiator {
     constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50,
         armorRemaining=0, maxArmor=0, debuff='NONE', debuffClear=null, statPoints=5, 
         strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, 
-        nextLevelUp=100, gold=0, defeatedOpponents=0, experienceReward=0, goldReward=0) {
+        gold=0, defeatedOpponents=0, experienceReward=50, goldReward=50) {
         this.gladiatorName = gladiatorName
         this.level = level
         this.health = health
@@ -359,7 +359,6 @@ class Gladiator {
         this.stamina = stamina
         this.charisma = charisma
         this.experience = experience
-        this.nextLevelUp = nextLevelUp
         this.gold = gold
         this.defeatedOpponents = defeatedOpponents
         this.experienceReward = experienceReward
@@ -403,10 +402,26 @@ class Gladiator {
         this.energy = this.maxEnergy
     }
 
+    getRewards(expReward, goldReward) {
+        this.experience += expReward
+        this.gold += Math.round((goldReward * (1 + crowdBarPercentage)))
+        this.defeatedOpponents += 1
+        setTimeout(() => {
+            displayGenericModal(`
+            You earned ${expReward} experience and ${Math.round(goldReward * (1 + crowdBarPercentage))} gold from your victory.
+            You have ${this.levelUps[this.level] - this.experience} experience remaining until next level.
+            `)
+        }, 3000)
+        if (this.experience >= this.levelUps[this.level]) {
+            this.levelUp()
+        }
+    }
+
     levelUp() {
         isPlayerLevelingUp = true
         this.level += 1
         this.statPoints += 5
+
         //not finished
     }
 
@@ -555,16 +570,6 @@ class Gladiator {
         if (crowdBarPercentage > 1) {crowdBarPercentage = 1}
         if (crowdBarPercentage < 0) {crowdBarPercentage = 0}
         crowdBar.style.width = `${crowdBarPercentage * 100}%`
-    }
-
-    checkHealth() {
-        if (this.health <= 0) {
-            if (this === enemyGladiator) {
-                //win fight
-            } else {
-                //game over
-            }
-        }
     }
 
     taunt(target) {
@@ -803,10 +808,13 @@ function progressBattle() {
 }
 
 function endBattle(didPlayerWin) {
-    leaveBattleBtn.style.display = 'flex'
+    setTimeout(() => {
+        leaveBattleBtn.style.display = 'flex'
+    }, 3000)
     pauseSound(battleMusic)
     if (didPlayerWin === true) {
         battleEndMsg.generateBattleMessage(playerGladiator, 'success')
+        playerGladiator.getRewards(enemyGladiator.experienceReward, enemyGladiator.goldReward)
         if (storyPhase === 0) {
             leaveBattleBtnBehavior = firstFightDoneCutscene
             nextScreen = cutsceneContainer
@@ -846,6 +854,69 @@ allButtons.forEach(button => {
     } else if (endCutsceneBtn.style.opacity >= 1) {
         playSound(simpleClick)
     }
+})
+
+allStatDecrementers.forEach(button => {
+    button.addEventListener('click', (event) => {
+        playerGladiator.decreaseStat(button.getAttribute('stat'))
+    })
+})
+
+allStatIncrementers.forEach(button => {
+    button.addEventListener('click', (event) => {
+        playerGladiator.increaseStat(button.getAttribute('stat'))
+    })
+})
+
+allActionBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        if (enemyTurn === false) {
+            let playerTookNoAction = false
+            let buttonID = button.getAttribute('id')
+            if (buttonID === 'light' || buttonID === 'medium' || buttonID === 'heavy') {
+                playerTookNoAction = playerGladiator.makeAttack(enemyGladiator, buttonID)
+            } else if (buttonID === 'taunt') {
+                playerTookNoAction = playerGladiator.taunt(enemyGladiator)
+            } else {
+                playerTookNoAction = playerGladiator[buttonID]()
+            }
+            if (playerTookNoAction === false && enemyGladiator.health > 0) {
+                progressBattle()
+            } else if (enemyGladiator.health <= 0) {
+                enemyTurn = true
+                playerActions.style.opacity = 0
+                endBattle(true)
+            }
+        } 
+    })
+})
+
+townOpenBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        let buttonID = button.getAttribute('id')
+        if (townInterfaceOpen === false) {
+            if (buttonID === 'arena') {enterArenaScreen.style.display = 'flex'}
+            else if (buttonID === 'inn') {enterInnScreen.style.display = 'flex'}
+            else if (buttonID === 'weaponsmith') {weaponsmithScreen.style.display = 'flex'}
+            else if (buttonID === 'armorer') {armorerScreen.style.display = 'flex'}
+            townInterfaceOpen = true
+            buildingsContainer.style.display = 'none'
+        }
+    })
+})
+
+townCloseBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        let buttonID = button.getAttribute('id')
+        if (townInterfaceOpen === true) {
+            if (buttonID === 'closeArena') {enterArenaScreen.style.display = 'none'}
+            else if (buttonID === 'closeInn') {enterInnScreen.style.display = 'none'}
+            else if (buttonID === 'closeWeaponsmith') {weaponsmithScreen.style.display = 'none'}
+            else if (buttonID === 'closeArmorer') {armorerScreen.style.display = 'none'}
+            townInterfaceOpen = false
+            buildingsContainer.style.display = 'flex'
+        }
+    })
 })
 
 loadBtn.addEventListener('click', (event) => {
@@ -897,18 +968,6 @@ startGameBtn.addEventListener('click', (event) => {
     toggleScreen('none', null, null)
 })
 
-allStatDecrementers.forEach(button => {
-    button.addEventListener('click', (event) => {
-        playerGladiator.decreaseStat(button.getAttribute('stat'))
-    })
-})
-
-allStatIncrementers.forEach(button => {
-    button.addEventListener('click', (event) => {
-        playerGladiator.increaseStat(button.getAttribute('stat'))
-    })
-})
-
 characterStatConfirmBtn.addEventListener('click', (event) => {
     if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === false) {
         playerCanChangeStats = false
@@ -932,7 +991,7 @@ genericModal.addEventListener('click', (event) => {
 })
 
 endCutsceneBtn.addEventListener('click', (event) => {
-    if (endCutsceneBtn.style.opacity >= 1) {
+    // if (endCutsceneBtn.style.opacity >= 1) {
         pauseSound(cutsceneMusic)
         playSound(activeCutscene.postCutsceneMusic)
         nextScreen = activeCutscene.postCutsceneScreen
@@ -941,60 +1000,9 @@ endCutsceneBtn.addEventListener('click', (event) => {
             startBattle()
             toggleScreen('none', arenaBG.imgURL, arenaBG.displayStyle)
         }
-    }
-})
-
-allActionBtns.forEach(button => {
-    button.addEventListener('click', (event) => {
-        if (enemyTurn === false) {
-            let playerTookNoAction = false
-            let buttonID = button.getAttribute('id')
-            if (buttonID === 'light' || buttonID === 'medium' || buttonID === 'heavy') {
-                playerTookNoAction = playerGladiator.makeAttack(enemyGladiator, buttonID)
-            } else if (buttonID === 'taunt') {
-                playerTookNoAction = playerGladiator.taunt(enemyGladiator)
-            } else {
-                playerTookNoAction = playerGladiator[buttonID]()
-            }
-            if (playerTookNoAction === false && enemyGladiator.health > 0) {
-                progressBattle()
-            } else if (enemyGladiator.health <= 0) {
-                enemyTurn = true
-                playerActions.style.opacity = 0
-                endBattle(true)
-            }
-        } 
-    })
+    // }
 })
 
 leaveBattleBtn.addEventListener('click', (event) => {
     leaveBattle()
-})
-
-townOpenBtns.forEach(button => {
-    button.addEventListener('click', (event) => {
-        let buttonID = button.getAttribute('id')
-        if (townInterfaceOpen === false) {
-            if (buttonID === 'arena') {enterArenaScreen.style.display = 'flex'}
-            else if (buttonID === 'inn') {enterInnScreen.style.display = 'flex'}
-            else if (buttonID === 'weaponsmith') {weaponsmithScreen.style.display = 'flex'}
-            else if (buttonID === 'armorer') {armorerScreen.style.display = 'flex'}
-            townInterfaceOpen = true
-            buildingsContainer.style.display = 'none'
-        }
-    })
-})
-
-townCloseBtns.forEach(button => {
-    button.addEventListener('click', (event) => {
-        let buttonID = button.getAttribute('id')
-        if (townInterfaceOpen === true) {
-            if (buttonID === 'closeArena') {enterArenaScreen.style.display = 'none'}
-            else if (buttonID === 'closeInn') {enterInnScreen.style.display = 'none'}
-            else if (buttonID === 'closeWeaponsmith') {weaponsmithScreen.style.display = 'none'}
-            else if (buttonID === 'closeArmorer') {armorerScreen.style.display = 'none'}
-            townInterfaceOpen = false
-            buildingsContainer.style.display = 'flex'
-        }
-    })
 })
