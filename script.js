@@ -896,6 +896,19 @@ function renderStats() {
             if (span.textContent === '') {span.textContent = 'NONE'}
         }
     })
+    allActionBtns.forEach(button => {
+        action = button.getAttribute('id')
+        if (action != 'winTheCrowd' && action != 'rest') {
+            accSpanID = `${action}Acc`
+            if (action != 'taunt') {
+                actionAcc = playerGladiator.calcAccuracy(action, enemyGladiator.defense, enemyGladiator)
+            } else {
+                actionAcc = playerGladiator.calcAccuracy(action, enemyGladiator.charisma, enemyGladiator)
+            }
+            actionAcc = `${Math.round(actionAcc * 100)}%`
+            document.getElementById(accSpanID).innerText = actionAcc
+        }
+    })
 }
 
 function toggleScreen(fadeType, newBackgroundImg, newBackgroundSize) {
