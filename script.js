@@ -62,7 +62,6 @@ const armorerTextEl = document.getElementById('armorerText')
 
 //ALL OTHER VARIABLES
 let musicRepeatInterval = null
-let playerCanChangeStats = true
 let currentScreen = null
 let nextScreen = startScreen
 let isPlayerLevelingUp = false
@@ -356,8 +355,9 @@ const allArmor = [
 class Gladiator {
     constructor(gladiatorName=0, level=1, health=20, maxHealth=20, energy=50, maxEnergy=50,
         armorRemaining=0, maxArmor=0, debuff='NONE', debuffClear=null, statPoints=5, 
-        strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0, experience=0, 
-        gold=0, defeatedOpponents=0, experienceReward=50, goldReward=50) {
+        strength=0, attack=0, defense=0, vitality=0, stamina=0, charisma=0,
+        strengthPrev=0, attackPrev=0, defensePrev=0, vitalityPrev=0, staminaPrev=0, charismaPrev=0,
+        experience=0, gold=0, defeatedOpponents=0, experienceReward=50, goldReward=50) {
         this.gladiatorName = gladiatorName
         this.level = level
         this.health = health
@@ -375,6 +375,12 @@ class Gladiator {
         this.vitality = vitality
         this.stamina = stamina
         this.charisma = charisma
+        this.strengthPrev = strengthPrev
+        this.attackPrev = attackPrev
+        this.defensePrev = defensePrev
+        this.vitalityPrev = vitalityPrev
+        this.staminaPrev = staminaPrev
+        this.charismaPrev = charismaPrev
         this.experience = experience
         this.gold = gold
         this.defeatedOpponents = defeatedOpponents
@@ -397,7 +403,7 @@ class Gladiator {
     ]
 
     increaseStat(stat) {
-        if(this.statPoints > 0 && playerCanChangeStats === true) {
+        if(this.statPoints > 0) {
             this[stat] += 1
             this.statPoints -= 1
             renderStats()
@@ -405,7 +411,8 @@ class Gladiator {
     }
 
     decreaseStat(stat) {
-        if(this[stat] > 0  && playerCanChangeStats === true) {
+        // prevStat = `prev${stat}`
+        if(this[stat] > this[`${stat}Prev`]) {
             this[stat] -= 1
             this.statPoints += 1
             renderStats()
@@ -417,6 +424,12 @@ class Gladiator {
         this.maxEnergy = (50 + 10 * this.stamina) * this.level
         this.health = this.maxHealth
         this.energy = this.maxEnergy
+        this.strengthPrev = this.strength
+        this.attackPrev = this.attack
+        this.defensePrev = this.defense
+        this.vitalityPrev = this.vitality
+        this.staminaPrev = this.stamina
+        this.charismaPrev = this.charisma
     }
 
     getRewards(expReward, goldReward) {
@@ -424,21 +437,24 @@ class Gladiator {
         this.gold += Math.round((goldReward * (1 + crowdBarPercentage)))
         this.defeatedOpponents += 1
         setTimeout(() => {
-            displayGenericModal(`You earned ${expReward} experience and ${Math.round(goldReward * (1 + crowdBarPercentage))} gold from your victory.<br>
-            You have ${this.levelUps[this.level] - this.experience} experience remaining until next level.
-            `, false, true)
+            if (this.experience >= this.levelUps[this.level]) {
+                displayGenericModal(`You earned ${expReward} experience and ${Math.round(goldReward * (1 + crowdBarPercentage))} gold from your victory.<br>`, false, true)
+                this.levelUp()
+            } else {
+                displayGenericModal(`You earned ${expReward} experience and ${Math.round(goldReward * (1 + crowdBarPercentage))} gold from your victory.<br>
+                You have ${this.levelUps[this.level] - this.experience} experience remaining until next level.
+                `, false, true)
+            }
         }, 3000)
-        if (this.experience >= this.levelUps[this.level]) {
-            this.levelUp()
-        }
     }
 
     levelUp() {
-        isPlayerLevelingUp = true
+        statScreenMessage.innerText = 'Your power grows...'
         this.level += 1
         this.statPoints += 5
-
-        //not finished
+        nextScreen = characterStatScreen
+        toggleScreen('none', null, null)
+        renderStats()
     }
 
     generateInventory() {
@@ -1140,14 +1156,18 @@ startGameBtn.addEventListener('click', (event) => {
 
 characterStatConfirmBtn.addEventListener('click', (event) => {
     if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === false) {
-        playerCanChangeStats = false
         pauseSound(startMusic)
+        isPlayerLevelingUp = true
         nextScreen = cutsceneContainer
         toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         introCutscene.renderCutscene()
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
-        //do different stuff when player is leveling up mid-game after a level-up
-    } else {displayGenericModal('You must allocate all stat points before proceeding.', true, true)}
+        nextScreen = townScreen
+        toggleScreen('none', townBG.imgURL, townBG.displayStyle)
+    } else {
+        displayGenericModal('You must allocate all stat points before proceeding.', true, true)
+        return
+    }
     playerGladiator.adjustSecondaryStats()
 })
 
