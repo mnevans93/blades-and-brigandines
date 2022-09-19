@@ -24,6 +24,7 @@ const allActionBtns = document.querySelectorAll('.action')
 const enemyStats = document.querySelectorAll('.enemyStat')
 const townOpenBtns = document.querySelectorAll('.buildingOpen')
 const townCloseBtns = document.querySelectorAll('.buildingClose')
+const startBattleBtns = document.querySelectorAll('.battle')
 
 //GET ELEMENT BY ID VARIABLES
 const loadBtn = document.getElementById('loadButton')
@@ -70,7 +71,7 @@ let activeCutscene = null
 let crowdBarPercentage = 0.1
 let battleRound = 1
 let enemyTurn = false
-let leaveBattleBtnBehavior = ''
+let leaveBattleBtnBehavior = null
 let storyPhase = 0
 let townInterfaceOpen = false
 
@@ -162,7 +163,7 @@ const cutscenes = [
         secondElText = `The world swirls around you, your vision blurring and before long, you realize you are lying face down in the sand.`,
         thirdElText = `This wasn't how it was supposed to go. You feel anger and regret surge through you as you lose physical sensation.`,
         fourthElText = `Your story should not have ended here. You still had so far left to go. Maybe things will be different in the next life...`,
-        buttonText = `The arena claims another.`,
+        buttonText = `The arena claims another...`,
         postCutsceneScreen = startScreen,
         postCutsceneMusic = startMusic,
         postCutsceneBattle = false
@@ -273,6 +274,12 @@ const allBattleMessages = [
         playerFailText = `...is this the end?`,
         enemySuccessText = null,
         enemyFailText = null,
+    ),
+    battleStartMsg = new BattleMessage(
+        playerSuccessText = `The crowd looks on with curiosity as you engage your opponent.`,
+        playerFailText = null,
+        enemySuccessText = null,
+        enemyFailText = null,
     )
 ]
 
@@ -334,7 +341,7 @@ const allWeapons = [
     serratedKnife = new Weapon('Serrated Knife', `Sharper than what you started with, but... isn't this just a steak knife?`, 100, 100, false, false, 5, 10),
     shortsword = new Weapon('Shortsword', `Finally, a real weapon.`, 250, 250, false, false, 10, 20),
     longsword = new Weapon('Longsword', `This blade has some real heft to it. This will do nicely...`, 1000, 1000, false, false, 20, 35),
-    broadsword = new Weapon('Broadsword', `Deadly sharp, easy to handle. Your enemies won't know what cut them.`, 2500, 1000, false, false, 35, 50)
+    broadsword = new Weapon('Broadsword', `Deadly sharp, easy to handle. Your enemies won't know what cut them.`, 2500, 2500, false, false, 35, 50)
 ] 
 
 class Armor extends Equipment {
@@ -394,12 +401,30 @@ class Gladiator {
     ]
 
     levelUps = [
-        0, //level 0, not used
-        100, //level 1, 100 xp for level 2
-        250, //level 2, 250 xp for level 3, etc.
-        750, 
-        2000,
+        0, //level 0, not used for player
+        200, //level 1, 100 xp for level 2
+        700, //level 2, 250 xp for level 3, etc.
+        2000, 
+        5000,
         0, //no levels after 5 for now
+    ]
+
+    enemyGladiatorBasics = [
+        ['New Blood', 50, 50], //level 0 enemy gladiator: name, rewards 50 xp, 50 base gold
+        ['Greenhorn Gladiator', 75, 100], //level 1 gladiator: name, rewards 75 xp, 100 base gold, etc.
+        ['Experienced Gladiator', 100, 200],
+        ['Adept Gladiator', 150, 400], 
+        ['Veteran Gladiator', 200, 700],
+        ['Legendary Gladiator', 250, 1000]
+    ]
+
+    enemyGladiatorGear = [
+        [rustyBlade, rustyBlade, plainClothing, plainClothing], //level 0 enemy will always have rusty blade and plain clothing
+        [rustyBlade, serratedKnife, plainClothing, hideArmor], //level 1 enemy will have rusty blade and plain clothing at a minimum, chance to have knife or hide instead
+        [serratedKnife, shortsword, hideArmor, paddedArmor], //level 2 enemy will have knife/hide minimum, chance to have shortsword/padded instead, etc.
+        [shortsword, shortsword, paddedArmor, paddedArmor],
+        [longsword, longsword, leatherArmor, leatherArmor],
+        [longsword, broadsword, leatherArmor, brigandine]
     ]
 
     increaseStat(stat) {
@@ -422,6 +447,10 @@ class Gladiator {
     adjustSecondaryStats() {
         this.maxHealth = (20 + 4 * this.vitality) * this.level
         this.maxEnergy = (50 + 10 * this.stamina) * this.level
+        if (this.maxHealth === 0) {this.maxHealth = 20}
+        if (this.maxEnergy === 0) {this.maxEnergy = 50}
+        this.maxArmor = this.armor.armorBonus
+        this.armorRemaining = this.maxArmor
         this.health = this.maxHealth
         this.energy = this.maxEnergy
         this.strengthPrev = this.strength
@@ -510,11 +539,14 @@ class Gladiator {
     }
 
     generateOverview() {
-        displayGenericModal(
-            `
-            ${this.gladiatorName}<br>
-            Level ${this.level} Gladiator<br>
-            HP: ${this.maxHealth} / Energy: ${this.maxEnergy}<br><br>
+        if (this === playerGladiator) {
+            displayGenericModal(
+            `${this.gladiatorName}<br>
+            Level ${this.level}<br>
+            HP: ${this.maxHealth} / Energy: ${this.maxEnergy} / Armor: ${this.maxArmor}<br>
+            Damage (light): ${this.weapon.minDamage + this.strength * 2} to ${this.weapon.maxDamage + this.strength * 2}<br>
+            Damage (med): ${(this.weapon.minDamage + this.strength * 2) * 1.5} to ${(this.weapon.maxDamage + this.strength * 2) * 1.5}<br>
+            Damage (heavy): ${(this.weapon.minDamage + this.strength * 2) * 2} to ${(this.weapon.maxDamage + this.strength * 2) * 2}<br><br>
             Strength: ${this.strength}<br>
             Attack: ${this.attack}<br>
             Defense: ${this.defense}<br>
@@ -525,8 +557,37 @@ class Gladiator {
             Next Level: ${this.levelUps[this.level]}<br><br>
             Total Gold: ${this.gold}<br><br>
             Opponents Defeated: ${this.defeatedOpponents}
-            `
-        , false, true)
+            `, false, true)
+        } else {
+            displayGenericModal(
+                `${this.gladiatorName}<br>
+                Level ${this.level}<br>
+                HP: ${this.maxHealth} / Energy: ${this.maxEnergy} / Armor: ${this.maxArmor}<br>
+                Damage (light): ${this.weapon.minDamage + this.strength * 2} to ${this.weapon.maxDamage + this.strength * 2}<br>
+                Damage (med): ${(this.weapon.minDamage + this.strength * 2) * 1.5} to ${(this.weapon.maxDamage + this.strength * 2) * 1.5}<br>
+                Damage (heavy): ${(this.weapon.minDamage + this.strength * 2) * 2} to ${(this.weapon.maxDamage + this.strength * 2) * 2}<br><br>
+                Strength: ${this.strength}<br>
+                Attack: ${this.attack}<br>
+                Defense: ${this.defense}<br>
+                Vitality: ${this.vitality}<br>
+                Stamina: ${this.stamina}<br>
+                Charisma: ${this.charisma}<br><br>
+                You will earn ${this.experienceReward} XP and ${this.goldReward} gold for winning. Begin fight?<br>
+                <button class="fightPrompt" data-yesno="yes">Start Fight</button> <button class="fightPrompt" data-yesno="no">Cancel</button>
+                `, false, false)
+            document.querySelectorAll('.fightPrompt').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    playSound(simpleClick)
+                    if (button.dataset.yesno === 'yes') {
+                        crowdBarPercentage = 0.1 + 0.1 * (this.level)
+                        nextScreen = battleScreen
+                        toggleScreen('none', arenaBG.imgURL, arenaBG.displayStyle)
+                        startBattle()
+                    }
+                    genericModal.style.display = 'none'
+                })
+            })
+        }
     }
 
     generateWeaponsmith() {
@@ -695,9 +756,9 @@ class Gladiator {
         if (attackType === 'light') {
             return weaponDamage + this.strength * 2
         } else if (attackType === 'medium') {
-            return weaponDamage * 1.5 + this.strength * 5
+            return weaponDamage * 1.5 + this.strength * 2
         } else if (attackType === 'heavy') {
-            return weaponDamage * 2 + this.strength * 10
+            return weaponDamage * 2 + this.strength * 2
         }
     }
 
@@ -829,6 +890,32 @@ class Gladiator {
             this.makeAttack(target, 'heavy')
         }
     }
+
+    generateEnemy(difficultyMod, rewardMod) {
+        this.level = playerGladiator.level + difficultyMod
+        this.statPoints = this.level * 5
+        this.gladiatorName = this.enemyGladiatorBasics[this.level][0]
+        this.experienceReward = (this.enemyGladiatorBasics[this.level][1]) * rewardMod
+        this.goldReward = (this.enemyGladiatorBasics[this.level][2]) * rewardMod
+        this.weapon = this.enemyGladiatorGear[this.level][0 + Math.round(Math.random())]
+        this.armor = this.enemyGladiatorGear[this.level][2 + Math.round(Math.random())]
+        
+        this.randomizeEnemyStats()
+        this.adjustSecondaryStats()
+        this.generateOverview()
+    }
+
+    randomizeEnemyStats() {
+        const statArray = ['strength', 'attack', 'defense', 'vitality', 'stamina', 'charisma']
+        statArray.forEach(stat => {
+            this[stat] = 0
+        })
+        while (this.statPoints > 0) {
+            let randomIndex = Math.floor(Math.random() * statArray.length)
+            this[statArray[randomIndex]] += 1
+            this.statPoints -= 1
+        }
+    }
 }
 
 const playerGladiator = new Gladiator()
@@ -953,10 +1040,10 @@ function displayGenericModal(modalText, plainText, easyDismiss) {
 }
 
 function startBattle() {
+    if (storyPhase != 0) {resetBattle()}
     playSound(battleMusic)
     renderStats()
     battleRound = 1
-    crowdBarPercentage = 0.1
     crowdBar.style.width = `${crowdBarPercentage * 100}%`
 }
 
@@ -1005,13 +1092,32 @@ function endBattle(didPlayerWin) {
 
 function leaveBattle() {
     pauseSound(battleMusic)
-    if (leaveBattleBtnBehavior.constructor.name === 'Cutscene') {
+    if (leaveBattleBtnBehavior != null) {
         toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         leaveBattleBtnBehavior.renderCutscene()
     } else {
         nextScreen = townScreen
+        enterArenaScreen.style.display = 'none'
+        buildingsContainer.style.display = 'flex'
+        townInterfaceOpen = false
         toggleScreen('none', townBG.imgURL, townBG.displayStyle)
     }
+}
+
+function resetBattle() {
+    playerGladiator.health = playerGladiator.maxHealth
+    playerGladiator.energy = playerGladiator.maxEnergy
+    playerGladiator.armorRemaining = playerGladiator.maxArmor
+    playerGladiator.armorRemaining = 0
+    playerGladiator.debuff = 'NONE'
+    playerGladiator.debuffClear = null
+
+    enemyTurn = false
+    battleStartMsg.generateBattleMessage(playerGladiator, 'success')
+    leaveBattleBtn.style.display = 'none'
+    playerActions.style.opacity = 1
+
+    renderStats()
 }
 
 //
@@ -1102,6 +1208,12 @@ townCloseBtns.forEach(button => {
             townInterfaceOpen = false
             buildingsContainer.style.display = 'flex'
         }
+    })
+})
+
+startBattleBtns.forEach(button => {
+    button.addEventListener('click', (event) => {
+        enemyGladiator.generateEnemy(parseInt(button.dataset.levelmod), parseFloat(button.dataset.rewardmod))
     })
 })
 

@@ -51,10 +51,7 @@
                 </p><br>
                 <h2><b>The Arena</b></h2>
                 <p>
-                    While in the arena, you have multiple options available to you for taking on your next opponent. First you must select whether it is a fight to the death or a fight
-                    until either gladiator yields. Fights to the death offer substantially higher gold and experience rewards than fights ending in yields, but beware: if your gladiator
-                    loses their life in the arena, they are dead for good. <br>
-                    Additionally, you may select a normal, hard, or deadly fight. The harder the fight, the more powerful your opponent, but the greater the rewards for victory.
+                    While in the arena, you may select a normal, hard, or deadly fight. The harder the fight, the more powerful your opponent, but the greater the rewards for victory. Be warned; death is final in the arena.
                 </p><br>
                 <h2><b>The Town</b></h2>
                 <p>
@@ -204,7 +201,9 @@
             <div class="buildingInterface" id="arenaInterface">
                 <h1 class="buildingName">The Arena</h1>
                 <h2 class="buildingDesc">The world-famous Arena where folks from all walks of life come to spectate battles between gladiators.<br><hr></h2>
-                <!-- stuff goes here -->
+                <button class="battle" data-levelmod="-1" data-rewardmod="0.5">Start Battle - Easy</button>
+                <button class="battle" data-levelmod="0" data-rewardmod="1">Start Battle - Normal</button>
+                <button class="battle" data-levelmod="1" data-rewardmod="2">Start Battle - Hard</button>
                 <button class="buildingClose" id="closeArena">Return to Town</button>
             </div>
             <div class="buildingInterface" id="innInterface">
@@ -216,7 +215,7 @@
             </div>
             <div class="buildingInterface" id="weaponsmithInterface">
                 <h1 class="buildingName">Phoenix Forge Weapons</h1>
-                <h2 class="buildingDesc">Well-made weaponry purpose built to send your foes to the afterlife.<br><hr></h2>
+                <h2 class="buildingDesc">Well-made weaponry purpose-built to send your foes to the afterlife.<br><hr></h2>
                 <h2 id="weaponsmithText"></h2>
                 <button class="buildingClose" id="closeWeaponsmith">Return to Town</button>
             </div>
