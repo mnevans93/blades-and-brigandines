@@ -292,8 +292,8 @@ class Debuff {
 }
 
 const allDebuffs = [
-    enraged = new Debuff('ENRAGED', 0.5, 2),
-    distracted = new Debuff('DISTRACTED', 1.5, 3),
+    enraged = new Debuff('ENRAGED', 0.5, 1),
+    distracted = new Debuff('DISTRACTED', 1.5, 2),
     exhausted = new Debuff('EXHAUSTED', 0.5, 0),
     countered = new Debuff('COUNTERED', null, 0)
 ]
@@ -367,6 +367,8 @@ class Gladiator {
         experience=0, gold=0, defeatedOpponents=0, experienceReward=50, goldReward=50) {
         this.gladiatorName = gladiatorName
         this.level = level
+        this.weapon = rustyBlade,
+        this.armor = plainClothing
         this.health = health
         this.maxHealth = maxHealth
         this.energy = energy
@@ -394,11 +396,6 @@ class Gladiator {
         this.experienceReward = experienceReward
         this.goldReward = goldReward
     }
-
-    equippedItems = [
-        this.weapon = rustyBlade,
-        this.armor = plainClothing
-    ]
 
     levelUps = [
         0, //level 0, not used for player
@@ -582,6 +579,7 @@ class Gladiator {
                         crowdBarPercentage = 0.1 + 0.1 * (this.level)
                         nextScreen = battleScreen
                         toggleScreen('none', arenaBG.imgURL, arenaBG.displayStyle)
+                        pauseSound(townMusic)
                         startBattle()
                     }
                     genericModal.style.display = 'none'
@@ -651,6 +649,7 @@ class Gladiator {
         } else if (itemToEquip.constructor.name === 'Armor') {
             this.armor.equipped = false
             this.armor = itemToEquip
+            this.adjustSecondaryStats()
         }
         itemToEquip.equipped = true
     }
@@ -1048,22 +1047,24 @@ function startBattle() {
 }
 
 function progressBattle() {
+    battleRound += 1
     if (enemyGladiator.debuff != countered) {
         playerActions.style.opacity = 0
         enemyTurn = true
-        if (playerGladiator.debuff != countered && playerGladiator.health > 0) {
-            setTimeout(() => {
-                enemyGladiator.decideAction(playerGladiator)
-                playerActions.style.opacity = 1
-                enemyTurn = false
-            }, 3000)
-        } else if (playerGladiator.debuff === countered && playerGladiator.health > 0) {
-            playerGladiator.debuffHandler()
-            progressBattle()
-            return
-        } else if (playerGladiator.health <= 0) {
-            endBattle(false)
-        }
+        setTimeout(() => {
+            enemyGladiator.decideAction(playerGladiator)
+            if (playerGladiator.health <= 0) {
+                endBattle(false)
+                return
+            }
+            if (playerGladiator.debuff === countered) {
+                playerGladiator.debuffHandler()
+                progressBattle()
+                return
+            }
+            playerActions.style.opacity = 1
+            enemyTurn = false
+        }, 3000)
     }
     battleRound += 1
     playerGladiator.debuffHandler()
@@ -1093,9 +1094,11 @@ function endBattle(didPlayerWin) {
 function leaveBattle() {
     pauseSound(battleMusic)
     if (leaveBattleBtnBehavior != null) {
+        nextScreen = cutsceneContainer
         toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         leaveBattleBtnBehavior.renderCutscene()
     } else {
+        playSound(townMusic)
         nextScreen = townScreen
         enterArenaScreen.style.display = 'none'
         buildingsContainer.style.display = 'flex'
@@ -1108,7 +1111,6 @@ function resetBattle() {
     playerGladiator.health = playerGladiator.maxHealth
     playerGladiator.energy = playerGladiator.maxEnergy
     playerGladiator.armorRemaining = playerGladiator.maxArmor
-    playerGladiator.armorRemaining = 0
     playerGladiator.debuff = 'NONE'
     playerGladiator.debuffClear = null
 
@@ -1274,6 +1276,8 @@ characterStatConfirmBtn.addEventListener('click', (event) => {
         toggleScreen('none', mainBG.imgURL, mainBG.displayStyle)
         introCutscene.renderCutscene()
     } else if(playerGladiator.statPoints === 0 && isPlayerLevelingUp === true) {
+        pauseSound(battleMusic)
+        playSound(townMusic)
         nextScreen = townScreen
         toggleScreen('none', townBG.imgURL, townBG.displayStyle)
     } else {
