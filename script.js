@@ -479,6 +479,7 @@ class Gladiator {
         this.level += 1
         this.statPoints += 5
         nextScreen = characterStatScreen
+        characterStatBackBtn.style.display = 'none'
         toggleScreen('none', null, null)
         renderStats()
     }
