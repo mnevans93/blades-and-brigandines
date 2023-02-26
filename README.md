@@ -7,6 +7,8 @@
 
 </center>
 
+### <a href="https://mnevans93.github.io/blades-and-brigandines/">Project Link</a> ###
+
 ### Intro ###
 Hi there! I'm Matthias Nevans, and thanks for checking out this repository for *Blades and Brigandines*. As the heading suggests, I was heavily inspired to create this game by *Swords and Sandals*, and I saw an opportunity to do my own spin on those games I love so much as my first major project for the General Assembly Software Engineering Immersive bootcamp.
 
